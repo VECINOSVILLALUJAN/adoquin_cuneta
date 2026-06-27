@@ -255,19 +255,119 @@
 
         /* --- FIN SECTOR IA --- */
 
-        h2 {
-            color: var(--primary);
-            font-size: 1.5rem;
-            margin: 40px 0 20px 0;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-        }
+       /* ===== TITULOS H2 DESTACADOS ===== */
+
+h2{
+    position:relative;
+    display:inline-block;
+
+    margin:45px 0 28px;
+    padding:12px 22px 12px 20px;
+
+    color:#ffffff;
+    font-size:1.65rem;
+    font-weight:800;
+    letter-spacing:.3px;
+
+    background:linear-gradient(90deg,
+        rgba(56,189,248,.18),
+        rgba(168,85,247,.15));
+
+    border-left:6px solid #38bdf8;
+    border-radius:12px;
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.25),
+        inset 0 0 0 1px rgba(255,255,255,.06);
+
+    overflow:hidden;
+
+    animation:h2Zoom 1s ease,
+              h2Glow 4s ease-in-out infinite;
+}
+
+/* Barra luminosa que recorre el título */
+h2::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-120%;
+
+    width:70%;
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(218, 230, 5, 0.35),
+        transparent);
+
+    transform:skewX(-25deg);
+
+    animation:h2Sweep 5s linear infinite;
+}
+
+/* Línea inferior brillante */
+h2::after{
+    content:"";
+    position:absolute;
+    left:20px;
+    bottom:6px;
+
+    width:70px;
+    height:3px;
+
+    background:#ed4e0b;
+    border-radius:20px;
+
+    box-shadow:0 0 12px #a8651a;
+}
+
+@keyframes h2Zoom{
+    0%{
+        opacity:0;
+        transform:scale(.85);
+    }
+    70%{
+        transform:scale(1.05);
+    }
+    100%{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+@keyframes h2Glow{
+    0%,100%{
+        box-shadow:
+            0 8px 24px rgba(0,0,0,.25),
+            0 0 10px rgba(0, 0, 0, 0.15);
+    }
+
+    50%{
+        box-shadow:
+            0 8px 24px rgba(0,0,0,.25),
+            0 0 28px rgba(56,189,248,.45);
+    }
+}
+
+@keyframes h2Sweep{
+    0%{left:-120%;}
+    100%{left:150%;}
+}
+
+h2:hover{
+    transform:translateY(-2px) scale(1.02);
+    transition:.35s;
+}
 
         h3 {
             color: var(--text-dark);
-            font-size: 1.25rem;
+            font-size: 2.25rem;
             margin: 30px 0 15px 0;
             font-weight: 600;
+           
+            
         }
 
         h4 {
@@ -596,7 +696,7 @@
             Planeamiento Territorial de la Municipalidad de Mina Clavero. Su objetivo principal en los barrios "Las
             Flores" y "Villa Luján" es mejorar la accesibilidad, minimizar costos operativos de conservación y mitigar
             el deterioro producido por las escorrentías pluviales. </p>
-        <p>A continuación se detallan los aspectos técnicos, de extensión y económicos de las obras proyectadas:</p>
+        <h3>A continuación se detallan los aspectos técnicos, de extensión y económicos de las obras proyectadas:</h3>
         <!-- CALLE 1 -->
         <div class="street-section">
             <h2>1. Calle Anastasia Fabre de Merlo</h2>
@@ -820,7 +920,7 @@
                 presupuestó únicamente movimiento de suelo y adoquinado por un total de <span
                     class="costo-destacado">$82.931.508</span> (Costo ML: $108.124).[cite: 1]</li>
         </ul>
-        <footer>Vecinos Frentistas Villa Lujan - 2026</footer>
+        <footer>Mina Clavero - Villa Lujan - 2026</footer>
     </div>
 </body>
 

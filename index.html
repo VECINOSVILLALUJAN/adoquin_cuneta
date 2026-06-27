@@ -657,7 +657,66 @@ animation:obraPulse 2.5s ease-in-out infinite;}
 0%,100%{transform:scale(1);box-shadow:0 0 12px rgba(16,185,129,.45);}
 50%{transform:scale(1.08);box-shadow:0 0 22px rgba(16,185,129,.8);}
 }
+  /* ===== CONTADOR DE VISITAS MEJORADO ===== */
+        .visitas-container {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+        }
 
+        .visitas-card {
+            position: relative;
+            padding: 18px 26px;
+            border-radius: 14px;
+            background: linear-gradient(135deg,
+                    rgba(56, 189, 248, 0.12),
+                    rgba(168, 85, 247, 0.10));
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            text-align: center;
+            animation: pulseVisitas 3s ease-in-out infinite;
+        }
+
+        .visitas-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(to right,
+                    transparent,
+                    rgba(255, 255, 255, 0.15),
+                    transparent);
+            transform: skewX(-25deg);
+            animation: shine 5s linear infinite;
+        }
+
+        .visitas-title {
+            font-size: 0.95rem;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .visitas-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 4px;
+        }
+
+        @keyframes shine {
+            0% { left: -120%; }
+            100% { left: 150%; }
+        }
+
+        @keyframes pulseVisitas {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
 </style>
 </head>
 
@@ -900,6 +959,15 @@ animation:obraPulse 2.5s ease-in-out infinite;}
         </ul>
         <footer>Mina Clavero - Villa Lujan - 2026</footer>
     </div>
+        <div class="visitas-container">
+            <div class="visitas-card">
+                <div class="visitas-title">Visitas al sitio</div>
+                <div class="visitas-number">
+                    <script type="text/javascript" src="https://contador.websiteout.com/js/13/3/31/0"></script>
+                </div>
+            </div>
+        </div>
+    
 </body>
 
 </html>

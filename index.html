@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <html lang="es">
@@ -644,7 +645,20 @@ h2:hover{
     background:rgba(233,228,74,.25);
     transform:translateY(-1px);
 }
-    </style>
+    
+.obra-completa{
+display:inline-block;padding:4px 12px;margin:0 4px;color:#fff;font-weight:800;
+font-size:1.05em;letter-spacing:.4px;
+background:linear-gradient(135deg,#10b981,#059669);
+border:2px solid #34d399;border-radius:999px;
+box-shadow:0 0 12px rgba(16,185,129,.45);
+animation:obraPulse 2.5s ease-in-out infinite;}
+@keyframes obraPulse{
+0%,100%{transform:scale(1);box-shadow:0 0 12px rgba(16,185,129,.45);}
+50%{transform:scale(1.08);box-shadow:0 0 22px rgba(16,185,129,.8);}
+}
+
+</style>
 </head>
 
 <body>
@@ -704,7 +718,7 @@ h2:hover{
                 es considerable, el proyecto la subdivide en tres tramos específicos:</p>
             <!-- TRAMO A -->
             <div class="tramo-card">
-                <span class="badge badge-completa">¿Qué se hace?: Cordón Cuneta + Adoquinado (Obra Completa)</span>
+                <span class="badge badge-completa">¿Qué se hace?: Cordón Cuneta + Adoquinado (<span class="obra-completa">Obra Completa</span>)</span>
                 <div class="tramo-title">A. Tramo: Entre Güemes y San Gabriel</div>
                 <ul>
                     <li><strong>Longitud:</strong> 206 metros.</li>
@@ -719,7 +733,7 @@ h2:hover{
             </div>
             <!-- TRAMO B -->
             <div class="tramo-card">
-                <span class="badge badge-completa">¿Qué se hace?: Cordón Cuneta + Adoquinado (Obra Completa)</span>
+                <span class="badge badge-completa">¿Qué se hace?: Cordón Cuneta + Adoquinado (<span class="obra-completa">Obra Completa</span>)</span>
                 <div class="tramo-title">B. Tramo: Entre San Gabriel y Guerrero</div>
                 <ul>
                     <li><strong>Longitud:</strong> 353 metros.</li>
@@ -734,7 +748,7 @@ h2:hover{
             </div>
             <!-- TRAMO C -->
             <div class="tramo-card">
-                <span class="badge badge-completa">¿Qué se hace?: Cordón Cuneta + Adoquinado (Obra Completa)</span>
+                <span class="badge badge-completa">¿Qué se hace?: Cordón Cuneta + Adoquinado (<span class="obra-completa">Obra Completa</span>)</span>
                 <div class="tramo-title">C. Tramo: Entre Guerrero y Hna. Santa Isabel</div>
                 <ul>
                     <li><strong>Longitud:</strong> 207 metros.</li>

@@ -705,10 +705,131 @@
             font-weight: 500;
             line-height: 1.5;
         }
+
+        /* ========================================================
+           ESTILOS DEL POPUP / MODAL DE ATENCIÓN
+           ======================================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 2px solid #ef4444;
+            box-shadow: 0 20px 50px rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 35px;
+            max-width: 550px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            width: 64px;
+            height: 64px;
+            background-color: rgba(239, 68, 68, 0.15);
+            border: 2px solid #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ef4444;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            animation: modalPulse 2s infinite;
+        }
+
+        @keyframes modalPulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .modal-title {
+            color: #f8fafc;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .modal-body {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .modal-body p {
+            margin-bottom: 12px;
+        }
+
+        .modal-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: #ffffff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+            background: linear-gradient(135deg, #f87171, #dc2626);
+        }
     </style>
 </head>
 
 <body>
+    <!-- POPUP MODAL DE ATENCIÓN -->
+    <div class="modal-overlay" id="noticeModal">
+        <div class="modal-content">
+            <div class="modal-icon">⚠️</div>
+            <div class="modal-title">Atención Vecinos</div>
+            <div class="modal-body">
+                <p><strong>Suspensión de obra:</strong> No se abre el pliego de oposición y el proyecto no se tratará en el Concejo Deliberante.</p>
+                <p>Se trabajará bajo una <strong>nueva ordenanza</strong>.</p>
+                <p style="color: var(--primary); font-weight: 700; margin-top: 15px;">Próxima reunión: Fecha a confirmar.</p>
+            </div>
+            <button class="modal-btn" onclick="cerrarModal()">Entendido</button>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <div class="municipality">Proyecto Presentado por Secretaría de Planeamiento Territorial de la Municipalidad de Mina Clavero</div>
@@ -945,8 +1066,8 @@
         <p>Tal como se detalla en el texto del documento original, el presupuesto global contempla ambas obras en conjunto: la construcción del cordón cuneta y la pavimentación con adoquinado.</p>
         <p>Si observás el desglose de los costos unitarios de referencia del proyecto, vas a ver que se cobra por separado la infraestructura de base y el acabado superior:</p>
         <ul>
-            <li><strong>Para el Cordón Cuneta:</strong> Se presupuestan los ítems de Material Hormigón ($23.000 x m²) y Mano de Obra Hormigón ($22.000 x m²).</li>
-            <li><strong>Para el Adoquinado:</strong> Se presupuestan los ítems de Material Adoquín ($19.900 x m²) y Mano de Obra Adoquín ($12.000 x m²).</li>
+            <li><strong>Para el Cordón Cuneta:</strong> Se presupuestan los ítems de Material Hormigón ($23.000 x m²) and Mano de Obra Hormigón ($22.000 x m²).</li>
+            <li><strong>Para el Adoquinado:</strong> Se presupuestan los ítems de Material Adoquín ($19.900 x m²) and Mano de Obra Adoquín ($12.000 x m²).</li>
         </ul>
         <p>Además, todos los tramos incluyen de forma transversal las tareas de Movimiento de suelo ($6.900 x m²), la Conducción Técnico y el Fondo Compensador del 10%.</p>
 
@@ -1013,7 +1134,6 @@
     <script>
         function calcularCuotaFrances(saldo, meses, tasaMensual) {
             if (saldo <= 0) return 0;
-            // Fórmula amortización Francesa: Cuota = V * i / (1 - (1 + i)^-n)
             return saldo * (tasaMensual / (1 - Math.pow(1 + tasaMensual, -meses)));
         }
 
@@ -1025,7 +1145,6 @@
             }).format(valor);
         }
 
-        // Variable de control para saber si el usuario tocó la caja de texto manualmente
         let usuarioModificoAnticipo = false;
 
         function calcularPresupuesto(esModificacionDeAnticipo) {
@@ -1035,9 +1154,8 @@
 
             const metros = parseFloat(document.getElementById('metros-frente').value) || 0;
             const costoPorMetro = parseFloat(document.getElementById('seleccion-calle').value) || 0;
-            const tasaInteres = 0.03; // 3% mensual fijo por ordenanza
+            const tasaInteres = 0.03;
 
-            // 1. Calcular Costo Total de la Obra y el 20% Base Obligatorio
             const costoTotal = metros * costoPorMetro;
             const minimoObligatorio = costoTotal * 0.20;
 
@@ -1048,8 +1166,6 @@
                 anticipoIngresado = 0;
             }
 
-            // Si el vecino cambia los metros o la calle SIN haber tipeado él mismo un importe, 
-            // auto-completamos con el valor justo del 20% para que sirva de guía.
             if (!usuarioModificoAnticipo && !esModificacionDeAnticipo) {
                 anticipoIngresado = Math.round(minimoObligatorio);
                 inputAnticipo.value = anticipoIngresado;
@@ -1058,28 +1174,20 @@
             let anticipoAplicado = anticipoIngresado;
             const cartelError = document.getElementById('error-anticipo');
 
-            // 2. Control de Reglas: Validar si partimos del 20% o más
             if (anticipoIngresado < minimoObligatorio && costoTotal > 0) {
-                // Si intenta poner menos, forzamos el cálculo con el 20% legal mínimo requerido
                 anticipoAplicado = minimoObligatorio;
-                
-                // Mostramos el aviso con los datos exactos requeridos
                 cartelError.innerHTML = `⚠️ El importe ingresado es menor al mínimo obligatorio. El simulador calculará el plan aplicando el 20% requerido por ordenanza (${formatearMoneda(minimoObligatorio)}).`;
                 cartelError.style.display = 'block';
             } else {
-                // Si ingresó lo mismo o más, el plan corre sobre su número y quitamos advertencias
                 cartelError.style.display = 'none';
             }
 
-            // 3. Saldo remanente neto a financiar
             const saldoAFinanciar = Math.max(0, costoTotal - anticipoAplicado);
 
-            // 4. Calcular Cuotas usando el Sistema Francés
             const cuota3 = calcularCuotaFrances(saldoAFinanciar, 3, tasaInteres);
             const cuota6 = calcularCuotaFrances(saldoAFinanciar, 6, tasaInteres);
             const cuota24 = calcularCuotaFrances(saldoAFinanciar, 24, tasaInteres);
 
-            // 5. Renderizar los resultados calculados dinámicamente
             document.getElementById('res-total').innerText = formatearMoneda(costoTotal);
             document.getElementById('res-min-obligatorio').innerText = formatearMoneda(minimoObligatorio);
             document.getElementById('res-anticipo').innerText = formatearMoneda(anticipoAplicado);
@@ -1096,9 +1204,17 @@
             }
         }
 
-        // Inicializar el sistema al cargar la página por primera vez
+        // FUNCIONES PARA CONTROLAR EL POPUP MODAL
+        function cerrarModal() {
+            document.getElementById('noticeModal').classList.remove('active');
+        }
+
         window.onload = function() {
             calcularPresupuesto(false);
+            // Activar el popup de forma automática al cargar el sitio
+            setTimeout(() => {
+                document.getElementById('noticeModal').classList.add('active');
+            }, 300);
         };
     </script>
 </body>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Oficial de Obra Pública - Mina Clavero</title>
+    <style>
+        :root {
+            --primary: #0069d9;
+            --primary-light: #e6f0fa;
+            --success: #218838;
+            --success-light: #eaf5ec;
+            --dark: #212529;
+            --gray-bg: #f4f6f9;
+            --border: #ced4da;
+            --warning-light: #fffdf5;
+            --warning-border: #ffeeba;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #dee2e6;
+            margin: 0;
+            padding: 10px;
+            color: var(--dark);
+        }
+
+        .calc-container {
+            max-width: 650px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 30px;
+            border-top: 6px solid var(--primary);
+            box-sizing: border-box;
+        }
+
+        .calc-header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--gray-bg);
+            padding-bottom: 15px;
+        }
+
+        .calc-header h2 {
+            margin: 0 0 8px 0;
+            color: var(--dark);
+            font-size: 24px;
+        }
+
+        .calc-header p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #495057;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            padding-right: 55px;
+        }
+
+        .unit-tag {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #868e96;
+            font-weight: bold;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .tramo-info-box {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 12px 15px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #004085;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            background-color: var(--gray-bg);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 25px;
+        }
+
+        .checkbox-card {
+            display: flex;
+            align-items: flex-start;
+            background: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .checkbox-card input {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .checkbox-text {
+            font-size: 13.5px;
+        }
+
+        .checkbox-text strong {
+            display: block;
+            color: var(--dark);
+            margin-bottom: 2px;
+        }
+
+        .checkbox-text span {
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        .btn-calc {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,105,217,0.2);
+        }
+
+        .btn-calc:hover {
+            background-color: #0056b3;
+        }
+
+        .results-box {
+            margin-top: 30px;
+            border-top: 2px dashed var(--border);
+            padding-top: 20px;
+            display: none;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .result-table th, .result-table td {
+            text-align: left;
+            padding: 10px;
+            font-size: 14px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .result-table th {
+            font-weight: 600;
+            color: #495057;
+            background-color: var(--gray-bg);
+        }
+
+        .result-table tr.total-row td {
+            font-size: 16px;
+            font-weight: 700;
+            color: #495057;
+            background-color: #f8f9fa;
+        }
+
+        .mode-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .mode-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .mode-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .finance-input-card {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+
+        .finance-input-card label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 4px;
+        }
+
+        .explanation-box {
+            margin-top: 20px;
+            background-color: var(--warning-light);
+            border: 1px solid var(--warning-border);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .explanation-box summary {
+            font-weight: bold;
+            font-size: 13px;
+            color: #856404;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .explanation-content {
+            font-size: 12.5px;
+            color: #495057;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+
+        .info-note {
+            font-size: 11px;
+            color: #868e96;
+            margin-top: 20px;
+            text-align: center;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calc-container">
+    <div class="calc-header">
+        <h2>Simulador de Liquidación de Obra</h2>
+        <p>ORDENANZA Nº 1383 — REGIMEN DE FACILIDADES DE PAGO</p>
+        <p>Los presentes calculos se realizan con base en los valores establecidos por la municipalidad. (puede haber variaciones en el cálculo final y/o diferencias con la versión oficial)</p>
+    </div>
+
+    <div class="form-group">
+        <label for="selectTramo">Seleccione la Arteria y Tramo correspondiente:</label>
+        <select id="selectTramo" class="form-control" onchange="cambiarTramo()">
+            <option value="merlo1">Calle Merlo I: Entre Güemes y San Gabriel ($177.193,75 / ML)</option>
+            <option value="merlo2" selected>Calle Merlo II: Entre San Gabriel y Guerrero ($229.835,48 / ML)</option>
+            <option value="merlo3">Calle Merlo III: Entre Guerrero y H. Santa Isabel ($275.359,00 / ML)</option>
+            <option value="artes">Calle Las Artes: Entre Merlo y 25 de Mayo ($121.375,11 / ML)</option>
+            <option value="rita">Calle Santa Rita: Entre Güemes y Canal Desagüe ($108.124,00 / ML)</option>
+        </select>
+    </div>
+
+    <div class="tramo-info-box" id="panelInfo">
+        </div>
+
+    <div class="form-group">
+        <label for="inputFrente">Metros lineales de frente de su lote:</label>
+        <div class="input-wrapper">
+            <input type="number" id="inputFrente" class="form-control" min="0" step="0.01" placeholder="Ej: 12.00">
+            <span class="unit-tag">ML</span>
+        </div>
+    </div>
+
+    <div class="section-title">Opciones a presupuestar (Costo base por ML, Fondo 10% Incluido):</div>
+    <div class="options-grid">
+        <label class="checkbox-card" id="cardCordon">
+            <input type="checkbox" id="chkCordon" checked onchange="evaluarCheckboxes()">
+            <div class="checkbox-text">
+                <strong id="lblCordon">Cordón Cuneta e Infraestructura de Hormigón</strong>
+                <span id="txtCordonML">Cargando...</span>
+            </div>
+        </label>
+        <label class="checkbox-card">
+            <input type="checkbox" id="chkAdoquin" checked>
+            <div class="checkbox-text">
+                <strong>Pavimento de Adoquines (Material + Mano de Obra)</strong>
+                <span id="txtAdoquinML">Cargando...</span>
+            </div>
+        </label>
+        <label class="checkbox-card">
+            <input type="checkbox" id="chkProyecto" checked>
+            <div class="checkbox-text">
+                <strong>Dirección Técnica y Proyecto Técnico</strong>
+                <span id="txtProyectoML">Cargando...</span>
+            </div>
+        </label>
+    </div>
+
+    <button class="btn-calc" onclick="calcularPresupuesto()">PROCESAR OPCIONES DE PAGO</button>
+
+    <div class="results-box" id="resultsBox">
+        <div class="section-title" style="color: var(--primary);">Liquidación Base de Obra (Valor Oficial):</div>
+        
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th>Concepto Técnico Evaluado</th>
+                    <th>Subtotal Base</th>
+                </tr>
+            </thead>
+            <tbody id="tablaCuerpo">
+                </tbody>
+        </table>
+
+        <div class="section-title" style="color: #495057; margin-top:25px;">Seleccione su Modalidad de Pago conveniente:</div>
+        
+        <div class="mode-container">
+            <div class="mode-card" style="border-top: 4px solid var(--success);">
+                <h4 style="color: var(--success);">Opción A: Pago Contado</h4>
+                <p style="font-size: 12px; color: #6c757d; margin: 0 0 10px 0;">Bonificación especial del 20% por cancelación anticipada.</p>
+                <table class="result-table" style="margin: 0; background: transparent;">
+                    <tr>
+                        <td style="padding: 6px 0; font-size:13px;">Valor de Obra:</td>
+                        <td style="padding: 6px 0; text-align: right;" id="valContadoOriginal">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px 0; font-size:13px; color: var(--success);">Ahorro (20%):</td>
+                        <td style="padding: 6px 0; text-align: right; color: var(--success);" id="valContadoDescuento">-</td>
+                    </tr>
+                    <tr style="font-weight: bold; border-top: 1px solid #dee2e6;">
+                        <td style="padding: 8px 0; color: var(--success); font-size:15px;">NETO A PAGAR:</td>
+                        <td style="padding: 8px 0; text-align: right; color: var(--success); font-size:15px;" id="valContadoFinal">-</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="mode-card" style="border-top: 4px solid var(--primary);">
+                <h4 style="color: var(--primary);">Opción B: Financiado</h4>
+                <p style="font-size: 12px; color: #6c757d; margin: 0 0 10px 0;">Piso de entrega del 20%. Puede aportar un monto mayor si lo desea.</p>
+                
+                <div class="finance-input-card">
+                    <label for="inputEntregaVoluntaria">Monto de Entrega Efectiva ($):</label>
+                    <input type="number" id="inputEntregaVoluntaria" class="form-control" style="padding: 6px; font-size: 13px;" min="0" step="0.01" oninput="recalcularPlanCuotas()">
+                    <span id="txtMinimoObligatorioNota" style="font-size: 11px; color: #664d03; display:block; margin-top:4px; font-weight: 500;"></span>
+                </div>
+
+                <table class="result-table" style="margin: 0; background: transparent;">
+                    <tr style="font-weight: 600; background: #f1f3f5;">
+                        <td style="padding: 6px 4px; font-size:13px;">Entrega Declarada:</td>
+                        <td style="padding: 6px 4px; text-align: right; color: var(--primary);" id="valFinanciaAnticipo">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px 4px; font-size:13px; color:#6c757d;">Saldo Neto a Financiar:</td>
+                        <td style="padding: 6px 4px; text-align: right; color:#6c757d;" id="valFinanciaSaldo">-</td>
+                    </tr>
+                </table>
+                <table class="result-table" style="margin: 8px 0 0 0; background: #fff; font-size:12.5px;">
+                    <thead>
+                        <tr style="background: var(--primary-light);">
+                            <th style="padding: 4px; font-size:12px;">Planes</th>
+                            <th style="padding: 4px; font-size:12px; text-align: right;">Cuota Fija</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCuotasCuerpo">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="explanation-box">
+            <details id="detailsExp">
+                <summary>🔍 Ver base legal y transparencia del esquema de cuotas</summary>
+                <div class="explanation-content" id="txtMemoriaDetalle">
+                    </div>
+            </details>
+        </div>
+
+        <p class="info-note">
+            * El presente simulador es de carácter técnico-informativo en concordancia estricta con los cuadros de costos aprobados por la Ordenanza Nº 1383.
+        </p>
+    </div>
+</div>
+
+<script>
+    // BASE DE DATOS MATEMÁTICA CON FONDO DEL 10% INCLUIDO EN CADA ÍTEM
+    const BASE_DATOS_OBRA = {
+        merlo1: {
+            nombre: "Calle Anastasia F. de Merlo — Tramo I (Güemes a San Gabriel)",
+            oficialCompletoML: 177193.75,
+            tieneCordonOriginal: true,
+            cordon: 82054.40, 
+            adoquin: 92128.51, 
+            proyecto: 3010.84,
+            detalleSuelo: "Movimiento de suelo distribuido de forma proporcional entre la calzada y la estructura vial."
+        },
+        merlo2: {
+            nombre: "Calle Anastasia F. de Merlo — Tramo II (San Gabriel a Guerrero)",
+            oficialCompletoML: 229835.48,
+            tieneCordonOriginal: true,
+            cordon: 137092.58,  
+            adoquin: 88388.10,   
+            proyecto: 4354.80,   
+            detalleSuelo: "En este sector los costos globales absorben el perfilado pluvial estructural adaptado a la topografía."
+        },
+        merlo3: {
+            nombre: "Calle Anastasia F. de Merlo — Tramo III (Guerrero a H. Santa Isabel)",
+            oficialCompletoML: 275359.00,
+            tieneCordonOriginal: true,
+            cordon: 144173.67, 
+            adoquin: 126102.20, 
+            proyecto: 5083.13,
+            detalleSuelo: "Estructura de costos adaptada al volumen de escurrimiento pluvial del tramo."
+        },
+        artes: {
+            nombre: "Calle Las Artes — Tramo Completo (Merlo a 25 de Mayo)",
+            oficialCompletoML: 121375.11,
+            tieneCordonOriginal: false,
+            cordon: 0, 
+            adoquin: 119024.11, 
+            proyecto: 2351.00,
+            detalleSuelo: "Obra realizada sobre cordón cuneta preexistente de hormigón."
+        },
+        rita: {
+            nombre: "Calle Santa Rita — Tramo Completo (Güemes a Canal Desagüe)",
+            oficialCompletoML: 108124.00,
+            tieneCordonOriginal: false,
+            cordon: 0, 
+            adoquin: 106198.50, 
+            proyecto: 1925.50,
+            detalleSuelo: "Presupuesto correspondiente a pavimento articulado sobre calzada de 5 metros."
+        }
+    };
+
+    const INTERES_MENSUAL = 0.03; // 3% mensual solicitado
+    let totalGlobalObraCalculado = 0; // Guardará el estado para los cambios on-input
+
+    const formatMoneda = (valor) => {
+        return new Intl.NumberFormat('es-AR', {
+            style: 'currency',
+            currency: 'ARS',
+            minimumFractionDigits: 2
+        }).format(valor);
+    };
+
+    // Fórmula del Sistema Francés para amortización constante de cuotas fijas
+    function calcularCuotaFrances(capital, cuotas, tasaMensual) {
+        if (tasaMensual === 0) return capital / cuotas;
+        return (capital * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -cuotas));
+    }
+
+    function evaluarCheckboxes() {
+        let tramoKey = document.getElementById('selectTramo').value;
+        let t = BASE_DATOS_OBRA[tramoKey];
+        if (!t.tieneCordonOriginal) {
+            document.getElementById('chkCordon').checked = false;
+        }
+    }
+
+    function cambiarTramo() {
+        let tramoKey = document.getElementById('selectTramo').value;
+        let t = BASE_DATOS_OBRA[tramoKey];
+
+        if (!t.tieneCordonOriginal) {
+            document.getElementById('chkCordon').checked = false;
+            document.getElementById('cardCordon').style.opacity = "0.5";
+            document.getElementById('txtCordonML').innerText = "No aplica (Existente o No contemplado)";
+            document.getElementById('lblCordon').style.textDecoration = "line-through";
+        } else {
+            document.getElementById('chkCordon').checked = true;
+            document.getElementById('cardCordon').style.opacity = "1";
+            document.getElementById('txtCordonML').innerText = `Costo Prorrateado: ${formatMoneda(t.cordon)} / ML`;
+            document.getElementById('lblCordon').style.textDecoration = "none";
+        }
+
+        document.getElementById('panelInfo').innerHTML = `
+            <strong>Ficha de Obra Activa:</strong> ${t.nombre}<br>
+            • Costo Unificado de Ordenanza: <strong>${formatMoneda(t.oficialCompletoML)} por ML</strong> (Fondo Compensador del 10% Incluido)
+        `;
+
+        document.getElementById('txtAdoquinML').innerText = `Costo Prorrateado: ${formatMoneda(t.adoquin)} / ML (Material y Mano de Obra)`;
+        document.getElementById('txtProyectoML').innerText = `Costo Prorrateado: ${formatMoneda(t.proyecto)} / ML`;
+
+        document.getElementById('resultsBox').style.display = 'none';
+    }
+
+    function calcularPresupuesto() {
+        let tramoKey = document.getElementById('selectTramo').value;
+        let t = BASE_DATOS_OBRA[tramoKey];
+
+        let metrosFrente = parseFloat(document.getElementById('inputFrente').value) || 0;
+        if (metrosFrente <= 0) {
+            alert("Por favor, ingrese un metraje de frente válido.");
+            return;
+        }
+
+        let chkCordon = document.getElementById('chkCordon').checked;
+        let chkAdoquin = document.getElementById('chkAdoquin').checked;
+        let chkProyecto = document.getElementById('chkProyecto').checked;
+
+        let tablaHTML = '';
+        totalGlobalObraCalculado = 0;
+
+        let todosSeleccionados = (t.tieneCordonOriginal && chkCordon && chkAdoquin && chkProyecto) || 
+                                 (!t.tieneCordonOriginal && chkAdoquin && chkProyecto);
+
+        // 1. CÁLCULO DE LA LIQUIDACIÓN BASE
+        if (todosSeleccionados) {
+            totalGlobalObraCalculado = t.oficialCompletoML * metrosFrente;
+            if (t.tieneCordonOriginal) {
+                tablaHTML += `<tr><td>Infraestructura de Cordón Cuneta (Proporcional)</td><td>${formatMoneda(t.cordon * metrosFrente)}</td></tr>`;
+            }
+            tablaHTML += `<tr><td>Pavimento de Adoquines Completo (Mano de Obra y Materiales)</td><td>${formatMoneda(t.adoquin * metrosFrente)}</td></tr>`;
+            tablaHTML += `<tr><td>Ítem Dirección Técnica y Proyecto Administrativo</td><td>${formatMoneda(t.proyecto * metrosFrente)}</td></tr>`;
+            tablaHTML += `<tr class="total-row"><td>TOTAL VALOR OFICIAL DE OBRA</td><td>${formatMoneda(totalGlobalObraCalculado)}</td></tr>`;
+        } else {
+            if (chkCordon && t.tieneCordonOriginal) {
+                let c = t.cordon * metrosFrente;
+                totalGlobalObraCalculado += c;
+                tablaHTML += `<tr><td>Infraestructura de Cordón Cuneta (Proporcional)</td><td>${formatMoneda(c)}</td></tr>`;
+            }
+            if (chkAdoquin) {
+                let a = t.adoquin * metrosFrente;
+                totalGlobalObraCalculado += a;
+                tablaHTML += `<tr><td>Pavimento de Adoquines Completo (Mano de Obra y Materiales)</td><td>${formatMoneda(a)}</td></tr>`;
+            }
+            if (chkProyecto) {
+                let p = t.proyecto * metrosFrente;
+                totalGlobalObraCalculado += p;
+                tablaHTML += `<tr><td>Ítem Dirección Técnica y Proyecto Administrativo</td><td>${formatMoneda(p)}</td></tr>`;
+            }
+            tablaHTML += `<tr class="total-row"><td>TOTAL ESTIMADO PARCIAL DE OBRA</td><td>${formatMoneda(totalGlobalObraCalculado)}</td></tr>`;
+        }
+        document.getElementById('tablaCuerpo').innerHTML = tablaHTML;
+
+        // 2. MODALIDAD DE PAGO A: CONTADO (CON 20% DE DESCUENTO)
+        let descuentoContado = totalGlobalObraCalculado * 0.20;
+        let netoContado = totalGlobalObraCalculado - descuentoContado;
+
+        document.getElementById('valContadoOriginal').innerText = formatMoneda(totalGlobalObraCalculado);
+        document.getElementById('valContadoDescuento').innerText = `- ${formatMoneda(descuentoContado)}`;
+        document.getElementById('valContadoFinal').innerText = formatMoneda(netoContado);
+
+        // 3. ASIGNAR EL MÍNIMO OBLIGATORIO AL INPUT DE LA FINANCIACIÓN
+        let minimoObligatorio = totalGlobalObraCalculado * 0.20;
+        document.getElementById('inputEntregaVoluntaria').value = minimoObligatorio.toFixed(2);
+        document.getElementById('txtMinimoObligatorioNota').innerText = `Mínimo obligatorio (20%): ${formatMoneda(minimoObligatorio)}`;
+
+        // Ejecutar el motor de cuotas por primera vez
+        recalcularPlanCuotas();
+
+        // MEMORIA DETALLADA
+        document.getElementById('txtMemoriaDetalle').innerHTML = `
+            ${t.detalleSuelo}<br><br>
+            <strong>Transparencia en el esquema Financiero Seleccionado:</strong><br>
+            • <strong>Opción Contado:</strong> Se aplica una quita directa del 20% sobre el total liquidado por cancelación anticipada.<br>
+            • <strong>Opción Financiada:</strong> El frentista debe abonar obligatoriamente una entrega inicial del 20% o un valor superior que elija voluntariamente para disminuir su deuda. El saldo de capital se distribuye en cuotas mensuales idénticas bajo el <strong>Sistema Francés de Amortización</strong> con un interés del <strong>3% directo sobre saldos</strong>.
+        `;
+
+        document.getElementById('resultsBox').style.display = 'block';
+    }
+
+    // FUNCIÓN DINÁMICA QUE CORRE EN TIEMPO REAL CUANDO EL VECINO ESCRIBE EL ANTICIPO
+    function recalcularPlanCuotas() {
+        let minimoObligatorio = totalGlobalObraCalculado * 0.20;
+        let entregaDeclarada = parseFloat(document.getElementById('inputEntregaVoluntaria').value) || 0;
+
+        // Validaciones en caliente de la entrega
+        if (entregaDeclarada < minimoObligatorio) {
+            // Se muestra visualmente el monto pero se calcula el saldo con el mínimo para no romper la regla fiscal
+            entregaDeclarada = minimoObligatorio;
+        }
+        if (entregaDeclarada > totalGlobalObraCalculado) {
+            entregaDeclarada = totalGlobalObraCalculado;
+            document.getElementById('inputEntregaVoluntaria').value = totalGlobalObraCalculado.toFixed(2);
+        }
+
+        let saldoFinanciar = totalGlobalObraCalculado - entregaDeclarada;
+
+        // Actualizar datos del recuadro financiero
+        document.getElementById('valFinanciaAnticipo').innerText = formatMoneda(entregaDeclarada);
+        document.getElementById('valFinanciaSaldo').innerText = formatMoneda(saldoFinanciar);
+
+        // Renderizar matriz de cuotas Francesas
+        const planes = [3, 6, 24];
+        let cuotasHTML = '';
+
+        planes.forEach(nCuotas => {
+            let valorCuota = calcularCuotaFrances(saldoFinanciar, nCuotas, INTERES_MENSUAL);
+            
+            // Si el saldo es 0 porque entregó el 100%, la cuota es $0
+            if (saldoFinanciar <= 0) valorCuota = 0;
+
+            cuotasHTML += `
+                <tr>
+                    <td style="padding: 6px 4px;"><strong>${nCuotas} meses</strong></td>
+                    <td style="padding: 6px 4px; text-align: right; color:#0069d9; font-weight:600;">${formatMoneda(valorCuota)}</td>
+                </tr>
+            `;
+        });
+        document.getElementById('tablaCuotasCuerpo').innerHTML = cuotasHTML;
+    }
+</script>
+
+</body>
+</html>

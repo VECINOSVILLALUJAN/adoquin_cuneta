@@ -1,1223 +1,2037 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Proyecto de Cordón Cuneta y Adoquinado - Etapa XII (Calculadora con Importe Fijo)</title>
+    <title>
+      Proyecto de Cordón Cuneta y Adoquinado - Etapa XII (Calculadora con
+      Importe Fijo)
+    </title>
     <style>
-        :root {
-            /* Colores Base del Tema Oscuro */
-            --bg-global: #0f172a;
-            /* Fondo general profundo (Slate 900) */
-            --card-bg: #1e293b;
-            /* Fondo de tarjetas y contenedor (Slate 800) */
-            --street-bg: #1e293b;
-            /* Fondo para las secciones de calles */
-            --tramo-bg: #334155;
-            /* Fondo para las sub-tarjetas de tramos */
-            --border-color: #475569;
-            /* Bordes sutiles (Slate 600) */
+      :root {
+        /* Colores Base del Tema Oscuro */
+        --bg-global: #0f172a;
+        /* Fondo general profundo (Slate 900) */
+        --card-bg: #1e293b;
+        /* Fondo de tarjetas y contenedor (Slate 800) */
+        --street-bg: #1e293b;
+        /* Fondo para las secciones de calles */
+        --tramo-bg: #334155;
+        /* Fondo para las sub-tarjetas de tramos */
+        --border-color: #475569;
+        /* Bordes sutiles (Slate 600) */
 
-            /* Tipografías */
-            --text-main: #cbd5e1;
-            /* Texto descriptivo claro (Slate 300) */
-            --text-dark: #f8fafc;
-            /* Títulos en blanco brillante (Slate 50) */
-            --primary: #38bdf8;
-            /* Azul celeste brillante para destacar */
-            --secondary: #0ea5e9;
-            /* Azul secundario */
+        /* Tipografías */
+        --text-main: #cbd5e1;
+        /* Texto descriptivo claro (Slate 300) */
+        --text-dark: #f8fafc;
+        /* Títulos en blanco brillante (Slate 50) */
+        --primary: #38bdf8;
+        /* Azul celeste brillante para destacar */
+        --secondary: #0ea5e9;
+        /* Azul secundario */
 
-            /* Resaltado de Tareas (Adaptado a Oscuro) */
-            --bg-completa: #064e3b;
-            --text-completa: #34d399;
-            --border-completa: #059669;
+        /* Resaltado de Tareas (Adaptado a Oscuro) */
+        --bg-completa: #064e3b;
+        --text-completa: #34d399;
+        --border-completa: #059669;
 
-            --bg-adoquin: #78350f;
-            --text-adoquin: #fbbf24;
-            --border-adoquin: #d97706;
+        --bg-adoquin: #78350f;
+        --text-adoquin: #fbbf24;
+        --border-adoquin: #d97706;
 
-            /* Resaltado de Costos Financieros */
-            --bg-costo: #4c0519;
-            --text-costo: #fca5a5;
-            --border-costo: #b91c1c;
+        /* Resaltado de Costos Financieros */
+        --bg-costo: #4c0519;
+        --text-costo: #fca5a5;
+        --border-costo: #b91c1c;
 
-            /* Colores para el bloque de IA y Calculadora */
-            --ia-purple: #a855f7;
-            --ia-bg: rgba(168, 85, 247, 0.1);
+        /* Colores para el bloque de IA y Calculadora */
+        --ia-purple: #a855f7;
+        --ia-bg: rgba(168, 85, 247, 0.1);
 
-            /* Tarjeta de simulación */
-            --sim-bg: #131a26;
-            --sim-border: #a855f7;
+        /* Tarjeta de simulación */
+        --sim-bg: #131a26;
+        --sim-border: #a855f7;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          sans-serif;
+        line-height: 1.7;
+        color: var(--text-main);
+        background-color: var(--bg-global);
+        padding: 40px 20px;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        background-color: var(--card-bg);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      }
+
+      header {
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 24px;
+        margin-bottom: 25px;
+      }
+
+      .municipality {
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: 2.5px;
+        margin-bottom: 6px;
+      }
+
+      h1 {
+        color: var(--text-dark);
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+      }
+
+      /* --- SECTOR: TARJETA DE ADVERTENCIA CON ANIMACIÓN IA Y BOTÓN --- */
+      .ia-notice-card {
+        background-color: var(--ia-bg);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 35px;
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .ia-notice-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          transparent,
+          rgba(168, 85, 247, 0.15),
+          transparent
+        );
+        transform: skewX(-25deg);
+        animation: sweep 6s infinite linear;
+      }
+
+      @keyframes sweep {
+        0% {
+          left: -150%;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        50% {
+          left: 150%;
         }
+        100% {
+          left: 150%;
+        }
+      }
 
+      .ia-avatar-container {
+        position: relative;
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+      }
+
+      .ia-icon-glow {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: var(--ia-purple);
+        border-radius: 50%;
+        opacity: 0.6;
+        animation: pulse-radar 2.5s infinite ease-out;
+      }
+
+      @keyframes pulse-radar {
+        0% {
+          transform: scale(0.9);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(2.2);
+          opacity: 0;
+        }
+      }
+
+      .ia-icon-badge {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #a855f7, #6366f1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .ia-notice-text {
+        flex-grow: 1;
+      }
+
+      .ia-notice-text h3 {
+        color: #e9d5ff !important;
+        margin: 0 0 6px 0 !important;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .ia-notice-text p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #cbd5e1;
+        margin-bottom: 16px;
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+        border-top: 1px solid var(--border-color);
+        margin-top: 40px;
+      }
+
+      .download-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(135deg, #a855f7, #7c3aed);
+        color: #ffffff;
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+
+      .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
+        background: linear-gradient(135deg, #b55fe6, #8b5cf6);
+      }
+
+      .download-icon {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* ===== TITULOS H2 DESTACADOS ===== */
+      h2 {
+        position: relative;
+        display: inline-block;
+        margin: 45px 0 28px;
+        padding: 12px 22px 12px 20px;
+        color: #ffffff;
+        font-size: 1.65rem;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+        background: linear-gradient(
+          90deg,
+          rgba(56, 189, 248, 0.18),
+          rgba(168, 85, 247, 0.15)
+        );
+        border-left: 6px solid #38bdf8;
+        border-radius: 12px;
+        box-shadow:
+          0 8px 24px rgba(0, 0, 0, 0.25),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        animation:
+          h2Zoom 1s ease,
+          h2Glow 4s ease-in-out infinite;
+      }
+
+      h2::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 70%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(237, 78, 11, 0.35),
+          transparent
+        );
+        transform: skewX(-25deg);
+        animation: h2Sweep 5s linear infinite;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        left: 20px;
+        bottom: 6px;
+        width: 70px;
+        height: 3px;
+        background: #ed4e0b;
+        border-radius: 20px;
+        box-shadow: 0 0 12px #a8651a;
+      }
+
+      @keyframes h2Zoom {
+        0% {
+          opacity: 0;
+          transform: scale(0.85);
+        }
+        70% {
+          transform: scale(1.05);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes h2Glow {
+        0%,
+        100% {
+          box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.25),
+            0 0 10px rgba(0, 0, 0, 0.15);
+        }
+        50% {
+          box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.25),
+            0 0 28px rgba(56, 189, 248, 0.45);
+        }
+      }
+
+      @keyframes h2Sweep {
+        0% {
+          left: -120%;
+        }
+        100% {
+          left: 150%;
+        }
+      }
+
+      h2:hover {
+        transform: translateY(-2px) scale(1.02);
+        transition: 0.35s;
+      }
+
+      h3 {
+        color: var(--text-dark);
+        font-size: 1.4rem;
+        margin: 30px 0 15px 0;
+        font-weight: 600;
+      }
+
+      h4 {
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        font-weight: 600;
+      }
+
+      p {
+        margin-bottom: 16px;
+        color: var(--text-main);
+        font-size: 1.05rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        margin-bottom: 16px;
+      }
+
+      .badge-completa {
+        background-color: var(--bg-completa);
+        color: var(--text-completa);
+        border: 1px solid var(--border-completa);
+      }
+
+      .badge-adoquin {
+        background-color: var(--bg-adoquin);
+        color: var(--text-adoquin);
+        border: 1px solid var(--border-adoquin);
+      }
+
+      .costo-destacado {
+        background-color: var(--bg-costo);
+        color: var(--text-costo);
+        border: 1px solid var(--border-costo);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-family:
+          SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.95rem;
+        display: inline-block;
+      }
+
+      .street-section {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 28px;
+        margin-bottom: 32px;
+        background-color: rgba(255, 255, 255, 0.02);
+      }
+
+      .tramo-card {
+        background: var(--tramo-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 24px;
+        margin-top: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      }
+
+      .tramo-title {
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 1.15rem;
+        margin-bottom: 12px;
+      }
+
+      /* Tarjeta de simulación frentista */
+      .simulacion-card {
+        background: var(--sim-bg);
+        border: 1px dashed var(--sim-border);
+        border-radius: 10px;
+        padding: 22px;
+        margin-top: 22px;
+        box-shadow: inset 0 0 12px rgba(168, 85, 247, 0.15);
+      }
+
+      .simulacion-title {
+        font-weight: 700;
+        color: #e9d5ff;
+        font-size: 1.15rem;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      ul {
+        list-style: none;
+        margin-top: 8px;
+      }
+
+      li {
+        margin-bottom: 10px;
+        font-size: 1rem;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 8px;
+        color: var(--text-main);
+      }
+
+      li:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+
+      .sub-list {
+        margin-left: 16px;
+        margin-top: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 14px 20px;
+        border-radius: 8px;
+        border-left: 3px solid var(--secondary);
+      }
+
+      .sub-list li {
+        border-bottom: none;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+      }
+
+      .alert-box {
+        background-color: #1e293b;
+        border: 1px solid #38bdf8;
+        border-left: 4px solid #38bdf8;
+        padding: 28px;
+        border-radius: 8px;
+        margin: 36px 0;
+      }
+
+      .alert-box h3 {
+        margin-top: 0;
+        color: #38bdf8;
+        font-size: 1.3rem;
+        margin-bottom: 16px;
+      }
+
+      .alert-box h4 {
+        color: #38bdf8;
+        margin-top: 20px;
+        border-top: 1px solid var(--border-color);
+        padding-top: 16px;
+      }
+
+      @media (max-width: 768px) {
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.7;
-            color: var(--text-main);
-            background-color: var(--bg-global);
-            padding: 40px 20px;
+          padding: 16px 8px;
         }
-
         .container {
-            max-width: 960px;
-            margin: 0 auto;
-            background-color: var(--card-bg);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+          padding: 24px 16px;
+          border-radius: 8px;
         }
-
-        header {
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 24px;
-            margin-bottom: 25px;
-        }
-
-        .municipality {
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            letter-spacing: 2.5px;
-            margin-bottom: 6px;
-        }
-
         h1 {
-            color: var(--text-dark);
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
+          font-size: 1.75rem;
         }
-
-        /* --- SECTOR: TARJETA DE ADVERTENCIA CON ANIMACIÓN IA Y BOTÓN --- */
-        .ia-notice-card {
-            background-color: var(--ia-bg);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 35px;
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ia-notice-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -150%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(to right, transparent, rgba(168, 85, 247, 0.15), transparent);
-            transform: skewX(-25deg);
-            animation: sweep 6s infinite linear;
-        }
-
-        @keyframes sweep {
-            0% { left: -150%; }
-            50% { left: 150%; }
-            100% { left: 150%; }
-        }
-
-        .ia-avatar-container {
-            position: relative;
-            flex-shrink: 0;
-            width: 48px;
-            height: 48px;
-        }
-
-        .ia-icon-glow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: var(--ia-purple);
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: pulse-radar 2.5s infinite ease-out;
-        }
-
-        @keyframes pulse-radar {
-            0% { transform: scale(0.9); opacity: 0.8; }
-            100% { transform: scale(2.2); opacity: 0; }
-        }
-
-        .ia-icon-badge {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #a855f7, #6366f1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .ia-notice-text {
-            flex-grow: 1;
-        }
-
-        .ia-notice-text h3 {
-            color: #e9d5ff !important;
-            margin: 0 0 6px 0 !important;
-            font-size: 1.15rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .ia-notice-text p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #cbd5e1;
-            margin-bottom: 16px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-dark);
-            font-size: 0.9rem;
-            border-top: 1px solid var(--border-color);
-            margin-top: 40px;
-        }
-
-        .download-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #a855f7, #7c3aed);
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 0.3px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
-            background: linear-gradient(135deg, #b55fe6, #8b5cf6);
-        }
-
-        .download-icon {
-            width: 18px;
-            height: 18px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        /* ===== TITULOS H2 DESTACADOS ===== */
         h2 {
-            position: relative;
-            display: inline-block;
-            margin: 45px 0 28px;
-            padding: 12px 22px 12px 20px;
-            color: #ffffff;
-            font-size: 1.65rem;
-            font-weight: 800;
-            letter-spacing: .3px;
-            background: linear-gradient(90deg, rgba(56, 189, 248, .18), rgba(168, 85, 247, .15));
-            border-left: 6px solid #38bdf8;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .25), inset 0 0 0 1px rgba(255, 255, 255, .06);
-            overflow: hidden;
-            animation: h2Zoom 1s ease, h2Glow 4s ease-in-out infinite;
+          font-size: 1.3rem;
         }
-
-        h2::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -120%;
-            width: 70%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(237, 78, 11, 0.35), transparent);
-            transform: skewX(-25deg);
-            animation: h2Sweep 5s linear infinite;
+        .ia-notice-card {
+          flex-direction: column;
+          gap: 16px;
+          padding: 20px 16px;
         }
-
-        h2::after {
-            content: "";
-            position: absolute;
-            left: 20px;
-            bottom: 6px;
-            width: 70px;
-            height: 3px;
-            background: #ed4e0b;
-            border-radius: 20px;
-            box-shadow: 0 0 12px #a8651a;
+        .download-btn {
+          width: 100%;
+          justify-content: center;
         }
-
-        @keyframes h2Zoom {
-            0% { opacity: 0; transform: scale(.85); }
-            70% { transform: scale(1.05); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes h2Glow {
-            0%, 100% { box-shadow: 0 8px 24px rgba(0, 0, 0, .25), 0 0 10px rgba(0, 0, 0, 0.15); }
-            50% { box-shadow: 0 8px 24px rgba(0, 0, 0, .25), 0 0 28px rgba(56, 189, 248, .45); }
-        }
-
-        @keyframes h2Sweep {
-            0% { left: -120%; }
-            100% { left: 150%; }
-        }
-
-        h2:hover {
-            transform: translateY(-2px) scale(1.02);
-            transition: .35s;
-        }
-
-        h3 {
-            color: var(--text-dark);
-            font-size: 1.4rem;
-            margin: 30px 0 15px 0;
-            font-weight: 600;
-        }
-
-        h4 {
-            color: var(--text-dark);
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        p {
-            margin-bottom: 16px;
-            color: var(--text-main);
-            font-size: 1.05rem;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            margin-bottom: 16px;
-        }
-
-        .badge-completa {
-            background-color: var(--bg-completa);
-            color: var(--text-completa);
-            border: 1px solid var(--border-completa);
-        }
-
-        .badge-adoquin {
-            background-color: var(--bg-adoquin);
-            color: var(--text-adoquin);
-            border: 1px solid var(--border-adoquin);
-        }
-
-        .costo-destacado {
-            background-color: var(--bg-costo);
-            color: var(--text-costo);
-            border: 1px solid var(--border-costo);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-            font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
-            font-size: 0.95rem;
-            display: inline-block;
-        }
-
         .street-section {
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 28px;
-            margin-bottom: 32px;
-            background-color: rgba(255, 255, 255, 0.02);
+          padding: 16px;
         }
-
         .tramo-card {
-            background: var(--tramo-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 24px;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+          padding: 16px;
         }
+      }
 
-        .tramo-title {
-            font-weight: 700;
-            color: var(--text-dark);
-            font-size: 1.15rem;
-            margin-bottom: 12px;
+      .download-note {
+        position: relative;
+        overflow: hidden;
+        margin-top: 20px;
+        padding: 18px 24px;
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.12),
+          rgba(168, 85, 247, 0.1)
+        );
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        border-left: 5px solid #f42d0a;
+        border-radius: 12px;
+        color: #eefdf6;
+        font-size: 1.18rem;
+        line-height: 1.8;
+        font-weight: 500;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      }
+
+      .download-note strong:first-child {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.45rem;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: 0.3px;
+      }
+
+      .highlight {
+        display: inline-block;
+        padding: 2px 8px;
+        margin: 0 2px;
+        color: #fff8b5;
+        font-weight: 700;
+        background: rgba(233, 228, 74, 0.15);
+        border: 1px solid rgba(233, 228, 74, 0.35);
+        border-radius: 6px;
+        transition: 0.3s ease;
+      }
+
+      .obra-completa {
+        display: inline-block;
+        padding: 4px 12px;
+        margin: 0 4px;
+        color: #fff;
+        font-weight: 800;
+        font-size: 1.05em;
+        letter-spacing: 0.4px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: 2px solid #34d399;
+        border-radius: 999px;
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+        animation: obraPulse 2.5s ease-in-out infinite;
+      }
+
+      @keyframes obraPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
         }
-
-        /* Tarjeta de simulación frentista */
-        .simulacion-card {
-            background: var(--sim-bg);
-            border: 1px dashed var(--sim-border);
-            border-radius: 10px;
-            padding: 22px;
-            margin-top: 22px;
-            box-shadow: inset 0 0 12px rgba(168, 85, 247, 0.15);
+        50% {
+          transform: scale(1.08);
+          box-shadow: 0 0 22px rgba(16, 185, 129, 0.8);
         }
+      }
 
-        .simulacion-title {
-            font-weight: 700;
-            color: #e9d5ff;
-            font-size: 1.15rem;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+      .visitas-container {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .visitas-card {
+        position: relative;
+        padding: 18px 26px;
+        border-radius: 14px;
+        background: linear-gradient(
+          135deg,
+          rgba(56, 189, 248, 0.12),
+          rgba(168, 85, 247, 0.1)
+        );
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        text-align: center;
+        animation: pulseVisitas 3s ease-in-out infinite;
+      }
+
+      .visitas-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          transparent,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+        transform: skewX(-25deg);
+        animation: shine 5s linear infinite;
+      }
+
+      .visitas-title {
+        font-size: 0.95rem;
+        color: var(--primary);
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .visitas-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-top: 4px;
+      }
+
+      @keyframes shine {
+        0% {
+          left: -120%;
         }
-
-        ul {
-            list-style: none;
-            margin-top: 8px;
+        100% {
+          left: 150%;
         }
-
-        li {
-            margin-bottom: 10px;
-            font-size: 1rem;
-            border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 8px;
-            color: var(--text-main);
+      }
+      @keyframes pulseVisitas {
+        0%,
+        100% {
+          transform: scale(1);
         }
-
-        li:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-            margin-bottom: 0;
+        50% {
+          transform: scale(1.03);
         }
+      }
 
-        .sub-list {
-            margin-left: 16px;
-            margin-top: 10px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 14px 20px;
-            border-radius: 8px;
-            border-left: 3px solid var(--secondary);
-        }
-
-        .sub-list li {
-            border-bottom: none;
-            padding-bottom: 4px;
-            margin-bottom: 4px;
-        }
-
-        .alert-box {
-            background-color: #1e293b;
-            border: 1px solid #38bdf8;
-            border-left: 4px solid #38bdf8;
-            padding: 28px;
-            border-radius: 8px;
-            margin: 36px 0;
-        }
-
-        .alert-box h3 {
-            margin-top: 0;
-            color: #38bdf8;
-            font-size: 1.3rem;
-            margin-bottom: 16px;
-        }
-
-        .alert-box h4 {
-            color: #38bdf8;
-            margin-top: 20px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 16px;
-        }
-
-        @media (max-width: 768px) {
-            body { padding: 16px 8px; }
-            .container { padding: 24px 16px; border-radius: 8px; }
-            h1 { font-size: 1.75rem; }
-            h2 { font-size: 1.3rem; }
-            .ia-notice-card { flex-direction: column; gap: 16px; padding: 20px 16px; }
-            .download-btn { width: 100%; justify-content: center; }
-            .street-section { padding: 16px; }
-            .tramo-card { padding: 16px; }
-        }
-
-        .download-note {
-            position: relative;
-            overflow: hidden;
-            margin-top: 20px;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, rgba(16, 185, 129, .12), rgba(168, 85, 247, .10));
-            border: 1px solid rgba(16, 185, 129, .35);
-            border-left: 5px solid #f42d0a;
-            border-radius: 12px;
-            color: #eefdf6;
-            font-size: 1.18rem;
-            line-height: 1.8;
-            font-weight: 500;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
-        }
-
-        .download-note strong:first-child {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 1.45rem;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: .3px;
-        }
-
-        .highlight {
-            display: inline-block;
-            padding: 2px 8px;
-            margin: 0 2px;
-            color: #fff8b5;
-            font-weight: 700;
-            background: rgba(233, 228, 74, .15);
-            border: 1px solid rgba(233, 228, 74, .35);
-            border-radius: 6px;
-            transition: .3s ease;
-        }
-
-        .obra-completa {
-            display: inline-block;
-            padding: 4px 12px;
-            margin: 0 4px;
-            color: #fff;
-            font-weight: 800;
-            font-size: 1.05em;
-            letter-spacing: .4px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            border: 2px solid #34d399;
-            border-radius: 999px;
-            box-shadow: 0 0 12px rgba(16, 185, 129, .45);
-            animation: obraPulse 2.5s ease-in-out infinite;
-        }
-
-        @keyframes obraPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 12px rgba(16, 185, 129, .45); }
-            50% { transform: scale(1.08); box-shadow: 0 0 22px rgba(16, 185, 129, .8); }
-        }
-
-        .visitas-container {
-            margin-top: 40px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .visitas-card {
-            position: relative;
-            padding: 18px 26px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(168, 85, 247, 0.10));
-            border: 1px solid rgba(56, 189, 248, 0.35);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-            text-align: center;
-            animation: pulseVisitas 3s ease-in-out infinite;
-        }
-
-        .visitas-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -120%;
-            width: 60%;
-            height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
-            transform: skewX(-25deg);
-            animation: shine 5s linear infinite;
-        }
-
-        .visitas-title {
-            font-size: 0.95rem;
-            color: var(--primary);
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .visitas-number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #ffffff;
-            margin-top: 4px;
-        }
-
-        @keyframes shine { 0% { left: -120%; } 100% { left: 150%; } }
-        @keyframes pulseVisitas { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-
-        /* ========================================================
+      /* ========================================================
            ESTILOS DE LA CALCULADORA DINÁMICA DE IMPORTE FIJO
            ======================================================== */
-        .calculator-card {
-            background: #111827;
-            border: 2px solid var(--primary);
-            border-radius: 14px;
-            padding: 30px;
-            margin: 40px 0;
-            box-shadow: 0 12px 30px rgba(56, 189, 248, 0.15);
-        }
+      .calculator-card {
+        background: #111827;
+        border: 2px solid var(--primary);
+        border-radius: 14px;
+        padding: 30px;
+        margin: 40px 0;
+        box-shadow: 0 12px 30px rgba(56, 189, 248, 0.15);
+      }
 
-        .calculator-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-        }
+      .calculator-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 12px;
+      }
 
-        .calculator-header h2 {
-            margin: 0;
-            background: none;
-            border: none;
-            padding: 0;
-            font-size: 1.5rem;
-            box-shadow: none;
-            color: #ffffff;
-        }
-        
-        .calculator-header h2::before, .calculator-header h2::after { display: none; }
+      .calculator-header h2 {
+        margin: 0;
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 1.5rem;
+        box-shadow: none;
+        color: #ffffff;
+      }
 
+      .calculator-header h2::before,
+      .calculator-header h2::after {
+        display: none;
+      }
+
+      .calculator-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      @media (max-width: 768px) {
         .calculator-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+          grid-template-columns: 1fr;
         }
+      }
 
-        @media (max-width: 768px) {
-            .calculator-grid { grid-template-columns: 1fr; }
-        }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+      .form-group label {
+        font-weight: 700;
+        color: #f8fafc;
+        font-size: 0.95rem;
+      }
 
-        .form-group label {
-            font-weight: 700;
-            color: #f8fafc;
-            font-size: 0.95rem;
-        }
+      .form-group input,
+      .form-group select {
+        background: #1e293b;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 12px;
+        color: #ffffff;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
 
-        .form-group input, .form-group select {
-            background: #1e293b;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            color: #ffffff;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
+      .form-group input:focus,
+      .form-group select:focus {
+        border-color: var(--primary);
+      }
 
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--primary);
-        }
+      /* Contenedor especial para el símbolo de pesos */
+      .input-pesos-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
 
-        /* Contenedor especial para el símbolo de pesos */
-        .input-pesos-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+      .input-pesos-container span {
+        position: absolute;
+        left: 14px;
+        color: #94a3b8;
+        font-weight: bold;
+        font-size: 1.1rem;
+      }
 
-        .input-pesos-container span {
-            position: absolute;
-            left: 14px;
-            color: #94a3b8;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
+      .input-pesos-container input {
+        padding-left: 32px;
+        width: 100%;
+      }
 
-        .input-pesos-container input {
-            padding-left: 32px;
-            width: 100%;
-        }
+      .calc-results {
+        grid-column: 1 / -1;
+        background: #1e293b;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 10px;
+        border-left: 5px solid var(--ia-purple);
+      }
 
-        .calc-results {
-            grid-column: 1 / -1;
-            background: #1e293b;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 10px;
-            border-left: 5px solid var(--ia-purple);
-        }
+      .result-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      }
 
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-        }
+      .result-row:last-child {
+        border-bottom: none;
+      }
 
-        .result-row:last-child {
-            border-bottom: none;
-        }
+      .result-val {
+        font-family: monospace;
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: #ffffff;
+      }
 
-        .result-val {
-            font-family: monospace;
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: #ffffff;
-        }
+      .result-val.highlight-green {
+        color: #34d399;
+        background: rgba(52, 211, 153, 0.1);
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
 
-        .result-val.highlight-green {
-            color: #34d399;
-            background: rgba(52, 211, 153, 0.1);
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
+      /* Cartel dinámico para el aviso del mínimo obligatorio */
+      .alert-min-anticipo {
+        background-color: rgba(239, 68, 68, 0.15);
+        border: 1px solid #ef4444;
+        color: #fca5a5;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.88rem;
+        margin-top: 4px;
+        display: none;
+        font-weight: 500;
+        line-height: 1.5;
+      }
 
-        /* Cartel dinámico para el aviso del mínimo obligatorio */
-        .alert-min-anticipo {
-            background-color: rgba(239, 68, 68, 0.15);
-            border: 1px solid #ef4444;
-            color: #fca5a5;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 0.88rem;
-            margin-top: 4px;
-            display: none;
-            font-weight: 500;
-            line-height: 1.5;
-        }
-
-        /* ========================================================
+      /* ========================================================
            ESTILOS DEL POPUP / MODAL DE ATENCIÓN
            ======================================================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(8px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.4s ease,
+          visibility 0.4s ease;
+      }
 
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+      .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
 
-        .modal-content {
-            background-color: var(--card-bg);
-            border: 2px solid #ef4444;
-            box-shadow: 0 20px 50px rgba(239, 68, 68, 0.3);
-            border-radius: 16px;
-            padding: 35px;
-            max-width: 550px;
-            width: 90%;
-            transform: scale(0.8);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            text-align: center;
-            position: relative;
-        }
+      .modal-content {
+        background-color: var(--card-bg);
+        border: 2px solid #ef4444;
+        box-shadow: 0 20px 50px rgba(239, 68, 68, 0.3);
+        border-radius: 16px;
+        padding: 35px;
+        max-width: 550px;
+        width: 90%;
+        transform: scale(0.8);
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        text-align: center;
+        position: relative;
+      }
 
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
+      .modal-overlay.active .modal-content {
+        transform: scale(1);
+      }
 
-        .modal-icon {
-            width: 64px;
-            height: 64px;
-            background-color: rgba(239, 68, 68, 0.15);
-            border: 2px solid #ef4444;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ef4444;
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 0 auto 20px;
-            animation: modalPulse 2s infinite;
-        }
+      .modal-icon {
+        width: 64px;
+        height: 64px;
+        background-color: rgba(239, 68, 68, 0.15);
+        border: 2px solid #ef4444;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ef4444;
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 0 auto 20px;
+        animation: modalPulse 2s infinite;
+      }
 
-        @keyframes modalPulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
-            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      @keyframes modalPulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
         }
+        70% {
+          box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
+      }
 
-        .modal-title {
-            color: #f8fafc;
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 15px;
-            letter-spacing: -0.5px;
-        }
+      .modal-title {
+        color: #f8fafc;
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
+      }
 
-        .modal-body {
-            color: var(--text-main);
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
+      .modal-body {
+        color: var(--text-main);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 25px;
+      }
 
-        .modal-body p {
-            margin-bottom: 12px;
-        }
+      .modal-body p {
+        margin-bottom: 12px;
+      }
 
-        .modal-body p:last-child {
-            margin-bottom: 0;
-        }
+      .modal-body p:last-child {
+        margin-bottom: 0;
+      }
 
-        .modal-btn {
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
-            color: #ffffff;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
-            transition: all 0.2s ease;
-        }
+      .modal-btn {
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+        color: #ffffff;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+        transition: all 0.2s ease;
+      }
 
-        .modal-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
-            background: linear-gradient(135deg, #f87171, #dc2626);
+      .modal-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+        background: linear-gradient(135deg, #f87171, #dc2626);
+      }
+      /* --- Estilos del Botón --- */
+      .download-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        background-color: #2563eb; /* Azul moderno */
+        color: #ffffff;
+        text-decoration: none;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        font-weight: 500;
+        border-radius: 8px;
+        transition:
+          background 0.2s ease,
+          transform 0.1s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .download-btn:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-1px);
+      }
+
+      .download-icon {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* --- Estilos del Modal Centrado (Premium) --- */
+      .premium-modal {
+        border: none;
+        padding: 0;
+        background: transparent;
+        overflow: visible;
+        max-width: 550px;
+        width: 90%;
+        /* Centrado automático mágico por el navegador */
+        margin: auto;
+      }
+
+      /* Fondo oscurecido y difuminado estilo Apple/Windows 11 */
+      .premium-modal::backdrop {
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        animation: fadeIn Backdrop 0.25s ease-out;
+      }
+
+      /* Tarjeta contenedora con animación */
+      .modal-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transform: scale(0.95);
+        opacity: 0;
+        animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      /* Encabezado */
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 24px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .modal-title-icon {
+        width: 22px;
+        height: 22px;
+        fill: #64748b;
+      }
+
+      .modal-header h3 {
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        font-size: 1.15rem;
+        color: #0f172a;
+        font-weight: 600;
+      }
+
+      /* Botón de cerrar */
+      .close-btn {
+        background: none;
+        border: none;
+        padding: 6px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.2s,
+          fill 0.2s;
+      }
+
+      .close-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: #94a3b8;
+      }
+
+      .close-btn:hover {
+        background: #e2e8f0;
+      }
+      .close-btn:hover svg {
+        fill: #334155;
+      }
+
+      /* Cuerpo y contenido */
+      .modal-body {
+        padding: 0;
+        background: #ffffff;
+      }
+
+      .modal-iframe {
+        width: 100%;
+        height: 480px;
+        border: none;
+        display: block;
+      }
+
+      /* --- Animaciones --- */
+      @keyframes scaleUp {
+        to {
+          transform: scale(1);
+          opacity: 1;
         }
+      }
+
+      @keyframes fadeInBackdrop {
+        from {
+          background: rgba(0, 0, 0, 0);
+        }
+        to {
+          background: rgba(15, 23, 42, 0.4);
+        }
+      }
+      /* Color en estado normal */
+      .download-btn {
+        background-color: #1e293b; /* Fondo gris oscuro (puedes usar también var(--tramo-bg)) */
+        color: #38bdf8; /* Texto celeste (var(--primary)) */
+        border: 1px solid #475569; /* Borde sutil */
+
+        /* Mantén estas propiedades para que no pierda la forma de botón elegante */
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        text-decoration: none;
+        font-family: system-ui, sans-serif;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+
+      /* Color cuando pasas el mouse por encima (Hover) */
+      .download-btn:hover {
+        background-color: #334155; /* Un tono un poco más claro al pasar el cursor */
+        color: #ffffff; /* El texto cambia a blanco puro */
+        border-color: #38bdf8; /* El borde se ilumina en celeste */
+      }
+
+      /* Estilo para que el icono tome el color del texto automáticamente */
+      .download-icon {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor; /* Esto hace que use el mismo color del texto */
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- POPUP MODAL DE ATENCIÓN -->
     <div class="modal-overlay" id="noticeModal">
-        <div class="modal-content">
-            <div class="modal-icon">⚠️</div>
-            <div class="modal-title">Atención Vecinos</div>
-            <div class="modal-body">
-                <p><strong>Suspensión de obra:</strong> No se abre el pliego de oposición y el proyecto no se tratará en el Concejo Deliberante.</p>
-                <p>Se trabajará bajo una <strong>nueva ordenanza</strong>.</p>
-                <p style="color: var(--primary); font-weight: 700; margin-top: 15px;">Próxima reunión: Fecha a confirmar.</p>
-            </div>
-            <button class="modal-btn" onclick="cerrarModal()">Entendido</button>
+      <div class="modal-content">
+        <div class="modal-icon">⚠️</div>
+        <div class="modal-title">Atención Vecinos</div>
+        <div class="modal-title">
+          <p>
+            <strong>Suspensión de obra:</strong> No se abre el pliego de
+            oposición y el proyecto no se tratará en el Concejo Deliberante.
+          </p>
+          <p>Se trabajará bajo una <strong>nueva ordenanza</strong>.</p>
+          <p style="color: var(--primary); font-weight: 700; margin-top: 15px">
+            Próxima reunión: Fecha a confirmar. <br />
+            Posibleme jueves 2 de julio 2026.
+          </p>
         </div>
+        <button class="modal-btn" onclick="cerrarModal()">Entendido</button>
+      </div>
     </div>
 
     <div class="container">
-        <header>
-            <div class="municipality">Proyecto Presentado por Secretaría de Planeamiento Territorial de la Municipalidad de Mina Clavero</div>
-            <h1>Proyecto de Cordón Cuneta y Adoquinado<br />Anexo de la Etapa XII</h1>
-        </header>
-
-        <div class="ia-notice-card">
-            <div class="ia-avatar-container">
-                <div class="ia-icon-glow"></div>
-                <div class="ia-icon-badge">IA</div>
-            </div>
-            <div class="ia-notice-text">
-                <h3>Procesamiento Digital e Inteligencia Artificial Activa</h3>
-                <p><strong>Nota de Transparencia Tecnológica:</strong> Toda la información técnica, métricas de
-                    superficies, desgloses presupuestarios y algoritmos de costos unitarios expuestos en esta interfaz
-                    han sido extraídos de forma automatizada y estructurada directamente desde el documento oficial
-                    <em>"ORDENANZA Nº 1383 OBRA ETAPA XII.pdf"</em> de la Municipalidad de Mina Clavero. Mediante el
-                    uso de modelos avanzados de Inteligencia Artificial (IA), se realizó la lectura, validación cruzada
-                    de las planillas de ingeniería y la de los marcos administrativos, garantizando una transcripción 100% íntegra, fiel y libre de errores humanos respecto al texto original.
-                </p>
-                <p class="download-note">
-                    <strong>¿Tenés alguna duda?</strong><br>
-                    <strong class="highlight">Descargá</strong> y
-                    <strong class="highlight">leé atentamente</strong> la
-                    <strong class="highlight">Ordenanza Municipal original</strong>.
-                    Es el <strong class="highlight">documento oficial</strong> que
-                    <strong class="highlight">respalda toda la información</strong>
-                    presentada en este sitio.
-                </p>
-                <a class="download-btn" download="" href="ORDENANZA Nº 1383 ANEXO ETAPA XII.pdf">
-                    <svg class="download-icon" viewbox="0 0 24 24">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path>
-                    </svg>
-                    Descargar Ordenanza Original (PDF)
-                </a>
-            </div>
+      <header>
+        <div class="municipality">
+          Proyecto Presentado por Secretaría de Planeamiento Territorial de la
+          Municipalidad de Mina Clavero
         </div>
+        <h1>
+          Proyecto de Cordón Cuneta y Adoquinado<br />Anexo de la Etapa XII
+        </h1>
+      </header>
 
-        <p>La <strong>Ordenanza Nº 1383/2025</strong> de la Municipalidad de Mina Clavero aprueba la ejecución de la obra pública de cordón cuneta y adoquinado (pavimento articulado) en los barrios <strong>Las Flores</strong> y <strong>Villa Luján</strong>, correspondiente a la Etapa XII. El proyecto busca optimizar la transitabilidad interna, asegurar la durabilidad de los caminos y mitigar los efectos climáticos derivados de los escurrimientos pluviales en el sector norte de la villa.</p>
-            
-        <h3>A continuación se detallan los aspectos técnicos, de extensión y económicos de las obras proyectadas:</h3>
+      <div class="ia-notice-card">
+        <div class="ia-avatar-container">
+          <div class="ia-icon-glow"></div>
+          <div class="ia-icon-badge">IA</div>
+        </div>
+        <div class="ia-notice-text">
+          <h3>Procesamiento Digital e Inteligencia Artificial Activa</h3>
+          <p>
+            <strong>Nota de Transparencia Tecnológica:</strong> Toda la
+            información técnica, métricas de superficies, desgloses
+            presupuestarios y algoritmos de costos unitarios expuestos en esta
+            interfaz han sido extraídos de forma automatizada y estructurada
+            directamente desde el documento oficial
+            <em>"ORDENANZA Nº 1383 OBRA ETAPA XII.pdf"</em> de la Municipalidad
+            de Mina Clavero. Mediante el uso de modelos avanzados de
+            Inteligencia Artificial (IA), se realizó la lectura, validación
+            cruzada de las planillas de ingeniería y la de los marcos
+            administrativos, garantizando una transcripción 100% íntegra, fiel y
+            libre de errores humanos respecto al texto original.
+          </p>
+          <p class="download-note">
+            <strong>¿Tenés alguna duda?</strong><br />
+            <strong class="highlight">Descargá</strong> y
+            <strong class="highlight">leé atentamente</strong> la
+            <strong class="highlight">Ordenanza Municipal original</strong>. Es
+            el <strong class="highlight">documento oficial</strong> que
+            <strong class="highlight">respalda toda la información</strong>
+            presentada en este sitio.
+          </p>
+          <a
+            class="download-btn"
+            download=""
+            href="ORDENANZA Nº 1383 ANEXO ETAPA XII.pdf"
+          >
+            <svg class="download-icon" viewbox="0 0 24 24">
+              <path
+                d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
+              ></path>
+            </svg>
+            Descargar Ordenanza Original (PDF)
+          </a>
 
-        <div class="street-section">
-            <h2>1. Calle Anastasia Fabre de Merlo</h2>
-            <p>Es la arteria principal de ingreso y egreso a los barrios por el sector norte. Debido a que la extensión es considerable, el proyecto la subdivide en tres tramos específicos:</p>
-            
-            <div class="tramo-card">
-                <span class="badge badge-completa">¿Qué se hace?: Cordón Cuneta + Adoquinado (<span class="obra-completa">Obra Completa</span>)</span>
-                <div class="tramo-title">A. Tramo: Entre Güemes y San Gabriel</div>
-                <ul>
-                    <li><strong>Longitud:</strong> 206 metros.</li>
-                    <li><strong>Ancho del adoquinado:</strong> 4 metros.</li>
-                    <li><strong>Ancho del cordón:</strong> 2 metros.</li>
-                    <li><strong>Superficies:</strong> 562 m² de cordón y 821 m² de adoquinado.</li>
-                    <li><strong>Presupuesto Total:</strong> <span class="costo-destacado">$68.396.790</span> (incluye un 10% de fondo compensador por imprevisiones o morosidad).</li>
-                    <li><strong>Metros de frente totales:</strong> 386 ML.</li>
-                    <li><strong>Costo por Metro Lineal:</strong> <span class="costo-destacado">$177.193,75</span></li>
-                </ul>
-            </div>
-            
-            <div class="tramo-card">
-                <span class="badge badge-completa">¿Qué se hace?: Cordón Cuneta + Adoquinado (<span class="obra-completa">Obra Completa</span>)</span>
-                <div class="tramo-title">B. Tramo: Entre San Gabriel y Guerrero</div>
-                <ul>
-                    <li><strong>Longitud:</strong> 353 metros.</li>
-                    <li><strong>Ancho del adoquinado:</strong> 4 metros.</li>
-                    <li><strong>Ancho del cordón:</strong> 2 metros.</li>
-                    <li><strong>Superficies:</strong> 1.638 m² de cordón y 1.412 m² de adoquinado.</li>
-                    <li><strong>Presupuesto Total:</strong> <span class="costo-destacado">$156.747.800</span> (incluye el 10% de fondo compensador).</li>
-                    <li><strong>Metros de frente totales:</strong> 682 ML.</li>
-                    <li><strong>Costo por Metro Lineal:</strong> <span class="costo-destacado">$229.835,48</span></li>
-                </ul>
-            </div>
-            
-            <div class="tramo-card">
-                <span class="badge badge-completa">¿Qué se hace?: Cordón Cuneta + Adoquinado (<span class="obra-completa">Obra Completa</span>)</span>
-                <div class="tramo-title">C. Tramo: Entre Guerrero y Hna. Santa Isabel</div>
-                <ul>
-                    <li><strong>Longitud:</strong> 207 metros.</li>
-                    <li><strong>Ancho del adoquinado:</strong> 4 metros.</li>
-                    <li><strong>Ancho del cordón:</strong> 2 metros.</li>
-                    <li><strong>Superficies:</strong> 1.164 m² de cordón y 824 m² de adoquinado.</li>
-                    <li><strong>Presupuesto Total:</strong> <span class="costo-destacado">$103.535.300</span></li>
-                    <li><strong>Metros de frente totales:</strong> 376 ML.</li>
-                    <li><strong>Costo por Metro Lineal:</strong> <span class="costo-destacado">$275.359,84</span></li>
-                </ul>
-
-                <div class="simulacion-card">
-                    <div class="simulacion-title">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sim-border);"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                        Ejemplo de Financiación Práctica (Frente de 30 metros lineales)
-                    </div>
-                    <p style="font-size:0.95rem; margin-bottom:12px; color:var(--text-main);">Cálculo testigo para un frentista de este <strong>Tramo C (Calle Merlo)</strong>, aplicando un 20% de anticipo y el saldo amortizado mediante el <strong>Sistema Francés (3% de interés mensual)</strong>:</p>
-                    
-                    <ul class="sub-list" style="margin-top:0; border-left-color: var(--sim-border); background: rgba(0,0,0,0.35);">
-                        <li><strong>Costo Total Base:</strong> 30 ML &times; $275.359,84 = <span class="costo-destacado">$8.260.795,20</span></li>
-                        <li><strong>Anticipo Requerido (20%):</strong> <span class="costo-destacado" style="background-color:#064e3b; color:#34d399; border-color:#059669;">$1.652.159,04</span></li>
-                        <li><strong>Saldo Neto a Financiar (80%):</strong> $6.608.636,16</li>
-                        
-                        <li style="margin-top:12px; border-top:1px dashed rgba(255,255,255,0.15); padding-top:12px;"><strong style="color:#ffffff;">Simulación de Cuotas Fijas Mensuales:</strong></li>
-                        <li>• Plan de <strong>3 Cuotas:</strong> <span class="costo-destacado">$2.336.315,95</span> al mes <span style="font-size:0.85rem; color:#94a3b8;">(Total financiado: $7.008.947,85)</span></li>
-                        <li>• Plan de <strong>6 Cuotas:</strong> <span class="costo-destacado">$1.219.897,09</span> al mes <span style="font-size:0.85rem; color:#94a3b8;">(Total financiado: $7.319.382,54)</span></li>
-                        <li>• Plan de <strong>24 Cuotas:</strong> <span class="costo-destacado">$390.222,04</span> al mes <span style="font-size:0.85rem; color:#94a3b8;">(Total financiado: $9.365.328,96)</span></li>
-                    </ul>
+          <dialog id="calc-modal" class="premium-modal">
+            <div class="modal-card">
+              <div class="modal-header">
+                <div class="header-title">
+                  <svg class="modal-title-icon" viewbox="0 0 24 24">
+                    <path
+                      d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-5 4h3v2h-3V7zm0 5h3v2h-3v-2zm-5-5h3v2H9V7zm0 5h3v2H9v-2zM7 16h10v2H7v-2z"
+                    />
+                  </svg>
+                  <p>Simulación de Importe</p>
                 </div>
+                <button
+                  class="close-btn"
+                  onclick="document.getElementById('calc-modal').close()"
+                  aria-label="Cerrar"
+                >
+                  <svg viewbox="0 0 24 24">
+                    <path
+                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div class="modal-body">
+                <iframe
+                  src="calc.html"
+                  class="modal-iframe"
+                  title="Calculadora"
+                ></iframe>
+              </div>
             </div>
+          </dialog>
         </div>
+      </div>
 
-        <div class="street-section">
-            <h2>2. Calle Santa Rita (Entre Güemes y Canal de Desagüe)</h2>
-            <span class="badge badge-adoquin">¿Qué se hace?: Movimiento de suelo y Adoquinado (Caso Especial)</span>
-            <p>Esta obra busca frenar la degradación del suelo natural ocasionada por los desagües pluviales en la zona.</p>
-            <ul>
-                <li><strong>Longitud:</strong> 381 metros.</li>
-                <li><strong>Ancho:</strong> 5,00 metros.</li>
-                <li><strong>Superficie total a adoquinar:</strong> 1.905 m².</li>
-                <li><strong>Detalle del Presupuesto:</strong>
-                    <ul class="sub-list">
-                        <li>Movimiento de suelo: <span class="costo-destacado">$13.144.500</span></li>
-                        <li>Material Adoquín: <span class="costo-destacado">$37.909.500</span></li>
-                        <li>Mano de obra Adoquín: <span class="costo-destacado">$22.860.000</span></li>
-                        <li>Proyecto y Conducción Técnica: <span class="costo-destacado">$1.478.280</span></li>
-                        <li>Fondo compensador (10%): <span class="costo-destacado">$7.539.228</span></li>
-                    </ul>
-                </li>
-                <li><strong>Presupuesto Total:</strong> <span class="costo-destacado">$82.931.508</span></li>
-                <li><strong>Metros de frente totales:</strong> 767 ML.</li>
-                <li><strong>Costo por Metro Lineal:</strong> <span class="costo-destacado">$108.124,00</span></li>
-            </ul>
-        </div>
+      <p>
+        La <strong>Ordenanza Nº 1383/2025</strong> de la Municipalidad de Mina
+        Clavero aprueba la ejecución de la obra pública de cordón cuneta y
+        adoquinado (pavimento articulado) en los barrios
+        <strong>Las Flores</strong> y <strong>Villa Luján</strong>,
+        correspondiente a la Etapa XII. El proyecto busca optimizar la
+        transitabilidad interna, asegurar la durabilidad de los caminos y
+        mitigar los efectos climáticos derivados de los escurrimientos pluviales
+        en el sector norte de la villa.
+      </p>
+      <a
+        class="download-btn"
+        href="#"
+        onclick="
+          document.getElementById('calc-modal').showModal();
+          return false;
+        "
+      >
+        <svg class="download-icon" viewbox="0 0 24 24">
+          <path
+            d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
+          ></path>
+        </svg>
+        <span>Calculadora para el frentista (Simulación de Importe)</span>
+      </a>
+      <h3>
+        A continuación se detallan los aspectos técnicos, de extensión y
+        económicos de las obras proyectadas:
+      </h3>
 
-        <div class="street-section">
-            <h2>3. Otras calles contempladas en la misma etapa del proyecto</h2>
-            <p>El documento también incluye la planificación económica y técnica para el adoquinado completo de otras dos arterias conectoras dentro del mismo sector:</p>
-            
-            <div class="tramo-card">
-                <span class="badge badge-adoquin">¿Qué se hace?: Solo Adoquinado (Ya tienen cordón)</span>
-                <div class="tramo-title">Calle Las Artes (Entre Anastasia Fabre de Merlo y 25 de Mayo)</div>
-                <p>Dividida en cuatro segmentos pequeños consecutivos para consolidar una doble vía de circulación interna, con un ancho de calzada de entre 5 and 5,50 metros. Su costo unificado ponderado por ML base de frente es de aproximadamente <strong>$232.846,74</strong>.</p>
-                <ul class="sub-list">
-                    <li>De Merlo a 12 de Octubre (110 m): Costo total de <span class="costo-destacado">$26.338.400</span>.</li>
-                    <li>De 12 de Octubre a 9 de Julio (84,50 m): Costo total de <span class="costo-destacado">$18.438.640</span>.</li>
-                    <li>De 9 de Julio a Urquiza (24 m): Costo total de <span class="costo-destacado">$5.231.600</span>.</li>
-                    <li>De Urquiza a 25 de Mayo (106 m): Costo total de <span class="costo-destacado">$23.071.400</span>.</li>
-                </ul>
-            </div>
-            
-            <div class="tramo-card">
-                <span class="badge badge-adoquin">¿Qué se hace?: Solo Adoquinado (Ya tienen cordón)</span>
-                <div class="tramo-title">Calle 25 de Mayo (Entre El Labrador y Güemes)</div>
-                <ul>
-                    <li>Con una longitud de 235 metros, un ancho de 5,50 metros (1.293 m²) y un presupuesto total asignado de <span class="costo-destacado">$56.285.900</span>. El costo base promedio por ML asignado de frente es de aproximadamente <strong>$119.757,23</strong>.</li>
-                </ul>
-            </div>
-        </div>
+      <div class="street-section">
+        <h2>1. Calle Anastasia Fabre de Merlo</h2>
+        <p>
+          Es la arteria principal de ingreso y egreso a los barrios por el
+          sector norte. Debido a que la extensión es considerable, el proyecto
+          la subdivide en tres tramos específicos:
+        </p>
 
-
-        <div class="calculator-card">
-            <div class="calculator-header">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="10" y1="9" x2="10" y2="17"/></svg>
-                <h2>Simulador Interactivo de Costos para Frentistas</h2>
-            </div>
-            <p style="font-size:0.95rem; margin-bottom:20px;">Ingresá tus metros de frente y seleccioná tu calle. Luego, indicá de forma exacta **el monto fijo en pesos ($) que querés entregar como anticipo** para simular tus cuotas.</p>
-            
-            <div class="calculator-grid">
-                <div class="form-group">
-                    <label for="metros-frente">Metros Lineales de Frente (ej: 10)</label>
-                    <input type="number" id="metros-frente" value="10" min="1" step="0.1" oninput="calcularPresupuesto(false)">
-                </div>
-                <div class="form-group">
-                    <label for="seleccion-calle">Seleccioná tu Calle / Tramo</label>
-                    <select id="seleccion-calle" onchange="calcularPresupuesto(false)">
-                        <option value="177193.75">Calle Merlo - Tramo A (Güemes a San Gabriel) [$177.193,75/ML]</option>
-                        <option value="229835.48">Calle Merlo - Tramo B (San Gabriel a Guerrero) [$229.835,48/ML]</option>
-                        <option value="275359.84" selected>Calle Merlo - Tramo C (Guerrero a Hna. Sta. Isabel) [$275.359,84/ML]</option>
-                        <option value="108124.00">Calle Santa Rita (Completo) [$108.124,00/ML]</option>
-                        <option value="232846.74">Calle Las Artes (Promedio estimado) [$232.846,74/ML]</option>
-                        <option value="119757.23">Calle 25 de Mayo (Promedio estimado) [$119.757,23/ML]</option>
-                    </select>
-                </div>
-                
-                <div class="form-group" style="grid-column: 1 / -1;">
-                    <label for="importe-anticipo">Monto que querés entregar como Anticipo ($)</label>
-                    <div class="input-pesos-container">
-                        <span>$</span>
-                        <input type="number" id="importe-anticipo" value="0" min="0" step="1000" oninput="calcularPresupuesto(true)">
-                    </div>
-                    <div class="alert-min-anticipo" id="error-anticipo"></div>
-                </div>
-
-                <div class="calc-results">
-                    <div class="result-row">
-                        <span>Costo Total Base de Obra:</span>
-                        <span id="res-total" class="result-val">$0,00</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Mínimo Obligatorio requerido (20%):</span>
-                        <span id="res-min-obligatorio" class="result-val" style="color: #fca5a5;">$0,00</span>
-                    </div>
-                    <div class="result-row" style="color: #34d399;">
-                        <span><strong>Anticipo Final Aplicado:</strong></span>
-                        <span id="res-anticipo" class="result-val highlight-green">$0,00</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Saldo Neto Restante a Financiar:</span>
-                        <span id="res-saldo" class="result-val">$0,00</span>
-                    </div>
-                    
-                    <div style="margin-top:15px; padding-top:10px; border-top:1px solid var(--border-color); font-weight:700; color:#e9d5ff;">
-                        Simulación de Cuotas Fijas sobre tu saldo financiado (3% mensual):
-                    </div>
-                    <div class="result-row">
-                        <span>Plan 3 Cuotas Fijas:</span>
-                        <span id="res-cuota3" class="result-val" style="color:var(--primary);">$0,00 / mes</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Plan 6 Cuotas Fijas:</span>
-                        <span id="res-cuota6" class="result-val" style="color:var(--primary);">$0,00 / mes</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Plan 24 Cuotas Fijas (Máximo automático):</span>
-                        <span id="res-cuota24" class="result-val" style="color:var(--primary);">$0,00 / mes</span>
-                    </div>
-                    
-                    <div style="margin-top:12px; font-size:0.8rem; color:#94a3b8; line-height:1.4;">
-                        * Nota: Los valores son estimativos de referencia calculados con base en los costos por metro lineal provistos por la ordenanza. Si pagás el 100% de Contado, tenés un 20% de descuento directo sobre el Costo Total Base sin pagar anticipo ni intereses.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <h2>Análisis Técnico y Aclaraciones de Planillas</h2>
-        <p>Tal como se detalla en el texto del documento original, el presupuesto global contempla ambas obras en conjunto: la construcción del cordón cuneta y la pavimentación con adoquinado.</p>
-        <p>Si observás el desglose de los costos unitarios de referencia del proyecto, vas a ver que se cobra por separado la infraestructura de base y el acabado superior:</p>
-        <ul>
-            <li><strong>Para el Cordón Cuneta:</strong> Se presupuestan los ítems de Material Hormigón ($23.000 x m²) and Mano de Obra Hormigón ($22.000 x m²).</li>
-            <li><strong>Para el Adoquinado:</strong> Se presupuestan los ítems de Material Adoquín ($19.900 x m²) and Mano de Obra Adoquín ($12.000 x m²).</li>
-        </ul>
-        <p>Además, todos los tramos incluyen de forma transversal las tareas de Movimiento de suelo ($6.900 x m²), la Conducción Técnico y el Fondo Compensador del 10%.</p>
-
-        <div class="alert-box">
-            <h3>Atención Técnico</h3>
-            <h4>1. Tramos que llevan CORDÓN CUNETA Y ADOQUINADO (Obra completa):</h4>
-            <p>En estas calles no había infraestructura previa, por lo que se presupuestó tanto la base de hormigón para el cordón como el pavimento de adoquines:</p>
-            <ul>
-                <li><strong>Calle Anastasia Fabre de Merlo:</strong> En sus tres tramos (desde Güemes hasta Hermana Santa Isabel). Si mirás sus planillas, tienen los ítems de "Material y Mano de Obra de Hormigón" (para el cordón) y los de "Material y Mano de Obra de Adoquín".</li>
-            </ul>
-            
-            <h4>2. Tramos que llevan SOLO ADOQUINADO (Ya tienen cordón cuneta):</h4>
-            <p>En estas calles no se construye cordón cuneta porque el documento aclara explícitamente que ya existe. La obra allí consiste únicamente en colocar los adoquines para frenar la erosión del agua:</p>
-            <ul>
-                <li><strong>Calle Las Artes (desde Merlo hasta 25 de Mayo):</strong> El texto dice textualmente que se proyecta "construir pavimento articulado, sobre los cordones cunetas existentes". En sus planillas vas a ver que no se cobra nada de hormigón, solo movimiento de suelo y adoquines.</li>
-                <li><strong>Calle 25 de Mayo (entre El Labrador y Güemes):</strong> El proyecto señala que es un sector que sufre degradación "a pesar de contar con cordón cuneta". Por lo tanto, el presupuesto es exclusivo para adoquinarla.</li>
-            </ul>
-            
-            <h4>El caso especial de Calle Santa Rita:</h4>
-            <ul>
-                <li><strong>Calle Santa Rita (entre Güemes y el canal de desagüe):</strong> En su planilla se presupuestó únicamente movimiento de suelo y adoquinado (no figuran los ítems de hormigón para cordón).</li>
-            </ul>
-        </div>
-
-        <h2>Resumen Ejecutivo y Aspectos Legales</h2>
-        <p>El proyecto representa una inversión de infraestructura urbana de gran envergadura para la localidad, regulado de forma estricta bajo los siguientes parámetros institucionales:</p>
-        
-        <ul>
-            <li><strong>Monto Total de Obra Aprobado:</strong> <span class="costo-destacado">$540.977.338</span> cubriendo una extensión total de <strong style="color: #fff;">3.293 metros lineales</strong> de intervención vial.</li>
-            <li><strong>Régimen de Pago Obligatorio:</strong> La obra se financia mediante el sistema de <em>Contribución por Mejoras</em>, siendo de carácter obligatorio para todos los propietarios frentistas (terrenos edificados o baldíos) beneficiados en los barrios Las Flores y Villa Luján.</li>
-            <li><strong>Planes de Pago y Beneficios Financieros:</strong>
-                <ul class="sub-list">
-                    <li><strong>Opción 1 (Contado):</strong> Un único pago en efectivo con un <span class="costo-destacado">20% de descuento</span> sobre el valor total de la contribución.</li>
-                    <li><strong>Opción 2 (Financiado):</strong> Anticipo inicial del 20% y el 80% restante financiado en hasta <strong style="color: #fff;">24 cuotas mensuales</strong> con un interés del 3% mensual mediante el Sistema Francés.</li>
-                    <li><em>Asignación de oficio:</em> Si el frentista no manifiesta su opción de pago dentro del plazo de 10 días hábiles de la notificación, el municipio aplicará de forma automática el plan financiado máximo de 24 cuotas.</li>
-                </ul>
+        <div class="tramo-card">
+          <span class="badge badge-completa"
+            >¿Qué se hace?: Cordón Cuneta + Adoquinado (<span
+              class="obra-completa"
+              >Obra Completa</span
+            >)</span
+          >
+          <div class="tramo-title">A. Tramo: Entre Güemes y San Gabriel</div>
+          <ul>
+            <li><strong>Longitud:</strong> 206 metros.</li>
+            <li><strong>Ancho del adoquinado:</strong> 4 metros.</li>
+            <li><strong>Ancho del cordón:</strong> 2 metros.</li>
+            <li>
+              <strong>Superficies:</strong> 562 m² de cordón y 821 m² de
+              adoquinado.
             </li>
-            <li><strong>Fondo Compensador (10%):</strong> Se añade de manera transversal un recargo del 10% sobre el total de cada frente. Este fondo se destinará a cubrir imprevistos de la obra, falta de pago o situaciones de morosidad.</li>
-            <li><strong>Planes Especiales de Asistencia:</strong> Los vecinos de bajos recursos, con ingresos mínimos comprobables, frentes con dimensiones excepcionales o instituciones deportivas, podrán tramitar esquemas especiales de financiamiento ante la Secretaría de Hacienda.</li>
-            <li><strong>Registro de Oposiciones y Validation Legal:</strong> Conforme a la legislación local (Ordenanza Nº 732/2001), se establece la apertura de un Registro de Oposiciones por un término de <strong style="color: #fff;">10 días hábiles</strong> desde la notificación formal. 
-                <ul class="sub-list">
-                    <li><strong>Firma Física:</strong> Se reciben oposiciones presenciales en la Mesa de Entradas de la Municipalidad (Av. Mitre 1913) o en la oficina de Obras Privadas (Calle Fleming 1332).</li>
-                    <li><strong>Frentistas No Residentes:</strong> Se habilitará un canal vía correo electrónico para aquellos titulares que no residan de forma permanente en la localidad.</li>
-                    <li><em>Ratificación:</em> Si las oposiciones asentadas no alcanzan el porcentaje mínimo que exige la normativa vigente, la obra queda automáticamente ratificada y se procederá a la emisión de las liquidaciones de cobro correspondientes.</li>
-                </ul>
+            <li>
+              <strong>Presupuesto Total:</strong>
+              <span class="costo-destacado">$68.396.790</span> (incluye un 10%
+              de fondo compensador por imprevisiones o morosidad).
             </li>
-        </ul>
-
-        <div class="visitas-container">
-            <div class="visitas-card">
-                <div class="visitas-title">Vecinos Informados Activos</div>
-                <div class="visitas-number">
-                    <script type="text/javascript" src="https://contador.websiteout.com/js/13/3/31/0"></script>
-                </div>
-            </div>
+            <li><strong>Metros de frente totales:</strong> 386 ML.</li>
+            <li>
+              <strong>Costo por Metro Lineal:</strong>
+              <span class="costo-destacado">$177.193,75</span>
+            </li>
+          </ul>
         </div>
 
-        <footer>
-            <p>Ordenanza Nº 1383/2025 — Sancionada por el Concejo Deliberante de Mina Clavero el 16 de abril de 2025.</p>
-            <p style="margin-top: 5px; opacity: 0.8;">Lic. Hernán Esteban (Presidente) — M. Agustina Cáceres Cuellar (Vicepresidente 1º)</p>
-        </footer>
+        <div class="tramo-card">
+          <span class="badge badge-completa"
+            >¿Qué se hace?: Cordón Cuneta + Adoquinado (<span
+              class="obra-completa"
+              >Obra Completa</span
+            >)</span
+          >
+          <div class="tramo-title">B. Tramo: Entre San Gabriel y Guerrero</div>
+          <ul>
+            <li><strong>Longitud:</strong> 353 metros.</li>
+            <li><strong>Ancho del adoquinado:</strong> 4 metros.</li>
+            <li><strong>Ancho del cordón:</strong> 2 metros.</li>
+            <li>
+              <strong>Superficies:</strong> 1.638 m² de cordón y 1.412 m² de
+              adoquinado.
+            </li>
+            <li>
+              <strong>Presupuesto Total:</strong>
+              <span class="costo-destacado">$156.747.800</span> (incluye el 10%
+              de fondo compensador).
+            </li>
+            <li><strong>Metros de frente totales:</strong> 682 ML.</li>
+            <li>
+              <strong>Costo por Metro Lineal:</strong>
+              <span class="costo-destacado">$229.835,48</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="tramo-card">
+          <span class="badge badge-completa"
+            >¿Qué se hace?: Cordón Cuneta + Adoquinado (<span
+              class="obra-completa"
+              >Obra Completa</span
+            >)</span
+          >
+          <div class="tramo-title">
+            C. Tramo: Entre Guerrero y Hna. Santa Isabel
+          </div>
+          <ul>
+            <li><strong>Longitud:</strong> 207 metros.</li>
+            <li><strong>Ancho del adoquinado:</strong> 4 metros.</li>
+            <li><strong>Ancho del cordón:</strong> 2 metros.</li>
+            <li>
+              <strong>Superficies:</strong> 1.164 m² de cordón y 824 m² de
+              adoquinado.
+            </li>
+            <li>
+              <strong>Presupuesto Total:</strong>
+              <span class="costo-destacado">$103.535.300</span>
+            </li>
+            <li><strong>Metros de frente totales:</strong> 376 ML.</li>
+            <li>
+              <strong>Costo por Metro Lineal:</strong>
+              <span class="costo-destacado">$275.359,84</span>
+            </li>
+          </ul>
+
+          <div class="simulacion-card">
+            <div class="simulacion-title">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="color: var(--sim-border)"
+              >
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <line x1="2" y1="10" x2="22" y2="10" />
+              </svg>
+              Ejemplo de Financiación Práctica (Frente de 30 metros lineales)
+            </div>
+            <p
+              style="
+                font-size: 0.95rem;
+                margin-bottom: 12px;
+                color: var(--text-main);
+              "
+            >
+              Cálculo testigo para un frentista de este
+              <strong>Tramo C (Calle Merlo)</strong>, aplicando un 20% de
+              anticipo y el saldo amortizado mediante el
+              <strong>Sistema Francés (3% de interés mensual)</strong>:
+            </p>
+
+            <ul
+              class="sub-list"
+              style="
+                margin-top: 0;
+                border-left-color: var(--sim-border);
+                background: rgba(0, 0, 0, 0.35);
+              "
+            >
+              <li>
+                <strong>Costo Total Base:</strong> 30 ML &times; $275.359,84 =
+                <span class="costo-destacado">$8.260.795,20</span>
+              </li>
+              <li>
+                <strong>Anticipo Requerido (20%):</strong>
+                <span
+                  class="costo-destacado"
+                  style="
+                    background-color: #064e3b;
+                    color: #34d399;
+                    border-color: #059669;
+                  "
+                  >$1.652.159,04</span
+                >
+              </li>
+              <li>
+                <strong>Saldo Neto a Financiar (80%):</strong> $6.608.636,16
+              </li>
+
+              <li
+                style="
+                  margin-top: 12px;
+                  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+                  padding-top: 12px;
+                "
+              >
+                <strong style="color: #ffffff"
+                  >Simulación de Cuotas Fijas Mensuales:</strong
+                >
+              </li>
+              <li>
+                • Plan de <strong>3 Cuotas:</strong>
+                <span class="costo-destacado">$2.336.315,95</span> al mes
+                <span style="font-size: 0.85rem; color: #94a3b8"
+                  >(Total financiado: $7.008.947,85)</span
+                >
+              </li>
+              <li>
+                • Plan de <strong>6 Cuotas:</strong>
+                <span class="costo-destacado">$1.219.897,09</span> al mes
+                <span style="font-size: 0.85rem; color: #94a3b8"
+                  >(Total financiado: $7.319.382,54)</span
+                >
+              </li>
+              <li>
+                • Plan de <strong>24 Cuotas:</strong>
+                <span class="costo-destacado">$390.222,04</span> al mes
+                <span style="font-size: 0.85rem; color: #94a3b8"
+                  >(Total financiado: $9.365.328,96)</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="street-section">
+        <h2>2. Calle Santa Rita (Entre Güemes y Canal de Desagüe)</h2>
+        <span class="badge badge-adoquin"
+          >¿Qué se hace?: Movimiento de suelo y Adoquinado (Caso Especial)</span
+        >
+        <p>
+          Esta obra busca frenar la degradación del suelo natural ocasionada por
+          los desagües pluviales en la zona.
+        </p>
+        <ul>
+          <li><strong>Longitud:</strong> 381 metros.</li>
+          <li><strong>Ancho:</strong> 5,00 metros.</li>
+          <li><strong>Superficie total a adoquinar:</strong> 1.905 m².</li>
+          <li>
+            <strong>Detalle del Presupuesto:</strong>
+            <ul class="sub-list">
+              <li>
+                Movimiento de suelo:
+                <span class="costo-destacado">$13.144.500</span>
+              </li>
+              <li>
+                Material Adoquín:
+                <span class="costo-destacado">$37.909.500</span>
+              </li>
+              <li>
+                Mano de obra Adoquín:
+                <span class="costo-destacado">$22.860.000</span>
+              </li>
+              <li>
+                Proyecto y Conducción Técnica:
+                <span class="costo-destacado">$1.478.280</span>
+              </li>
+              <li>
+                Fondo compensador (10%):
+                <span class="costo-destacado">$7.539.228</span>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Presupuesto Total:</strong>
+            <span class="costo-destacado">$82.931.508</span>
+          </li>
+          <li><strong>Metros de frente totales:</strong> 767 ML.</li>
+          <li>
+            <strong>Costo por Metro Lineal:</strong>
+            <span class="costo-destacado">$108.124,00</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="street-section">
+        <h2>3. Otras calles contempladas en la misma etapa del proyecto</h2>
+        <p>
+          El documento también incluye la planificación económica y técnica para
+          el adoquinado completo de otras dos arterias conectoras dentro del
+          mismo sector:
+        </p>
+
+        <div class="tramo-card">
+          <span class="badge badge-adoquin"
+            >¿Qué se hace?: Solo Adoquinado (Ya tienen cordón)</span
+          >
+          <div class="tramo-title">
+            Calle Las Artes (Entre Anastasia Fabre de Merlo y 25 de Mayo)
+          </div>
+          <p>
+            Dividida en cuatro segmentos pequeños consecutivos para consolidar
+            una doble vía de circulación interna, con un ancho de calzada de
+            entre 5 and 5,50 metros. Su costo unificado ponderado por ML base de
+            frente es de aproximadamente <strong>$232.846,74</strong>.
+          </p>
+          <ul class="sub-list">
+            <li>
+              De Merlo a 12 de Octubre (110 m): Costo total de
+              <span class="costo-destacado">$26.338.400</span>.
+            </li>
+            <li>
+              De 12 de Octubre a 9 de Julio (84,50 m): Costo total de
+              <span class="costo-destacado">$18.438.640</span>.
+            </li>
+            <li>
+              De 9 de Julio a Urquiza (24 m): Costo total de
+              <span class="costo-destacado">$5.231.600</span>.
+            </li>
+            <li>
+              De Urquiza a 25 de Mayo (106 m): Costo total de
+              <span class="costo-destacado">$23.071.400</span>.
+            </li>
+          </ul>
+        </div>
+
+        <div class="tramo-card">
+          <span class="badge badge-adoquin"
+            >¿Qué se hace?: Solo Adoquinado (Ya tienen cordón)</span
+          >
+          <div class="tramo-title">
+            Calle 25 de Mayo (Entre El Labrador y Güemes)
+          </div>
+          <ul>
+            <li>
+              Con una longitud de 235 metros, un ancho de 5,50 metros (1.293 m²)
+              y un presupuesto total asignado de
+              <span class="costo-destacado">$56.285.900</span>. El costo base
+              promedio por ML asignado de frente es de aproximadamente
+              <strong>$119.757,23</strong>.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="calculator-card">
+        <div class="calculator-header">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--primary)"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <line x1="9" y1="9" x2="15" y2="9" />
+            <line x1="9" y1="13" x2="15" y2="13" />
+            <line x1="9" y1="17" x2="15" y2="17" />
+            <line x1="10" y1="9" x2="10" y2="17" />
+          </svg>
+          <h2>Simulador Interactivo de Costos para Frentistas</h2>
+        </div>
+        <p style="font-size: 0.95rem; margin-bottom: 20px">
+          Ingresá tus metros de frente y seleccioná tu calle. Luego, indicá de
+          forma exacta **el monto fijo en pesos ($) que querés entregar como
+          anticipo** para simular tus cuotas.
+        </p>
+
+        <div class="calculator-grid">
+          <div class="form-group">
+            <label for="metros-frente"
+              >Metros Lineales de Frente (ej: 10)</label
+            >
+            <input
+              type="number"
+              id="metros-frente"
+              value="10"
+              min="1"
+              step="0.1"
+              oninput="calcularPresupuesto(false)"
+            />
+          </div>
+          <div class="form-group">
+            <label for="seleccion-calle">Seleccioná tu Calle / Tramo</label>
+            <select id="seleccion-calle" onchange="calcularPresupuesto(false)">
+              <option value="177193.75">
+                Calle Merlo - Tramo A (Güemes a San Gabriel) [$177.193,75/ML]
+              </option>
+              <option value="229835.48">
+                Calle Merlo - Tramo B (San Gabriel a Guerrero) [$229.835,48/ML]
+              </option>
+              <option value="275359.84" selected>
+                Calle Merlo - Tramo C (Guerrero a Hna. Sta. Isabel)
+                [$275.359,84/ML]
+              </option>
+              <option value="108124.00">
+                Calle Santa Rita (Completo) [$108.124,00/ML]
+              </option>
+              <option value="232846.74">
+                Calle Las Artes (Promedio estimado) [$232.846,74/ML]
+              </option>
+              <option value="119757.23">
+                Calle 25 de Mayo (Promedio estimado) [$119.757,23/ML]
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1">
+            <label for="importe-anticipo"
+              >Monto que querés entregar como Anticipo ($)</label
+            >
+            <div class="input-pesos-container">
+              <span>$</span>
+              <input
+                type="number"
+                id="importe-anticipo"
+                value="0"
+                min="0"
+                step="1000"
+                oninput="calcularPresupuesto(true)"
+              />
+            </div>
+            <div class="alert-min-anticipo" id="error-anticipo"></div>
+          </div>
+
+          <div class="calc-results">
+            <div class="result-row">
+              <span>Costo Total Base de Obra:</span>
+              <span id="res-total" class="result-val">$0,00</span>
+            </div>
+            <div class="result-row">
+              <span>Mínimo Obligatorio requerido (20%):</span>
+              <span
+                id="res-min-obligatorio"
+                class="result-val"
+                style="color: #fca5a5"
+                >$0,00</span
+              >
+            </div>
+            <div class="result-row" style="color: #34d399">
+              <span><strong>Anticipo Final Aplicado:</strong></span>
+              <span id="res-anticipo" class="result-val highlight-green"
+                >$0,00</span
+              >
+            </div>
+            <div class="result-row">
+              <span>Saldo Neto Restante a Financiar:</span>
+              <span id="res-saldo" class="result-val">$0,00</span>
+            </div>
+
+            <div
+              style="
+                margin-top: 15px;
+                padding-top: 10px;
+                border-top: 1px solid var(--border-color);
+                font-weight: 700;
+                color: #e9d5ff;
+              "
+            >
+              Simulación de Cuotas Fijas sobre tu saldo financiado (3% mensual):
+            </div>
+            <div class="result-row">
+              <span>Plan 3 Cuotas Fijas:</span>
+              <span
+                id="res-cuota3"
+                class="result-val"
+                style="color: var(--primary)"
+                >$0,00 / mes</span
+              >
+            </div>
+            <div class="result-row">
+              <span>Plan 6 Cuotas Fijas:</span>
+              <span
+                id="res-cuota6"
+                class="result-val"
+                style="color: var(--primary)"
+                >$0,00 / mes</span
+              >
+            </div>
+            <div class="result-row">
+              <span>Plan 24 Cuotas Fijas (Máximo automático):</span>
+              <span
+                id="res-cuota24"
+                class="result-val"
+                style="color: var(--primary)"
+                >$0,00 / mes</span
+              >
+            </div>
+
+            <div
+              style="
+                margin-top: 12px;
+                font-size: 0.8rem;
+                color: #94a3b8;
+                line-height: 1.4;
+              "
+            >
+              * Nota: Los valores son estimativos de referencia calculados con
+              base en los costos por metro lineal provistos por la ordenanza. Si
+              pagás el 100% de Contado, tenés un 20% de descuento directo sobre
+              el Costo Total Base sin pagar anticipo ni intereses.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Análisis Técnico y Aclaraciones de Planillas</h2>
+      <p>
+        Tal como se detalla en el texto del documento original, el presupuesto
+        global contempla ambas obras en conjunto: la construcción del cordón
+        cuneta y la pavimentación con adoquinado.
+      </p>
+      <p>
+        Si observás el desglose de los costos unitarios de referencia del
+        proyecto, vas a ver que se cobra por separado la infraestructura de base
+        y el acabado superior:
+      </p>
+      <ul>
+        <li>
+          <strong>Para el Cordón Cuneta:</strong> Se presupuestan los ítems de
+          Material Hormigón ($23.000 x m²) and Mano de Obra Hormigón ($22.000 x
+          m²).
+        </li>
+        <li>
+          <strong>Para el Adoquinado:</strong> Se presupuestan los ítems de
+          Material Adoquín ($19.900 x m²) and Mano de Obra Adoquín ($12.000 x
+          m²).
+        </li>
+      </ul>
+      <p>
+        Además, todos los tramos incluyen de forma transversal las tareas de
+        Movimiento de suelo ($6.900 x m²), la Conducción Técnico y el Fondo
+        Compensador del 10%.
+      </p>
+
+      <div class="alert-box">
+        <h3>Atención Técnico</h3>
+        <h4>
+          1. Tramos que llevan CORDÓN CUNETA Y ADOQUINADO (Obra completa):
+        </h4>
+        <p>
+          En estas calles no había infraestructura previa, por lo que se
+          presupuestó tanto la base de hormigón para el cordón como el pavimento
+          de adoquines:
+        </p>
+        <ul>
+          <li>
+            <strong>Calle Anastasia Fabre de Merlo:</strong> En sus tres tramos
+            (desde Güemes hasta Hermana Santa Isabel). Si mirás sus planillas,
+            tienen los ítems de "Material y Mano de Obra de Hormigón" (para el
+            cordón) y los de "Material y Mano de Obra de Adoquín".
+          </li>
+        </ul>
+
+        <h4>2. Tramos que llevan SOLO ADOQUINADO (Ya tienen cordón cuneta):</h4>
+        <p>
+          En estas calles no se construye cordón cuneta porque el documento
+          aclara explícitamente que ya existe. La obra allí consiste únicamente
+          en colocar los adoquines para frenar la erosión del agua:
+        </p>
+        <ul>
+          <li>
+            <strong>Calle Las Artes (desde Merlo hasta 25 de Mayo):</strong> El
+            texto dice textualmente que se proyecta "construir pavimento
+            articulado, sobre los cordones cunetas existentes". En sus planillas
+            vas a ver que no se cobra nada de hormigón, solo movimiento de suelo
+            y adoquines.
+          </li>
+          <li>
+            <strong>Calle 25 de Mayo (entre El Labrador y Güemes):</strong> El
+            proyecto señala que es un sector que sufre degradación "a pesar de
+            contar con cordón cuneta". Por lo tanto, el presupuesto es exclusivo
+            para adoquinarla.
+          </li>
+        </ul>
+
+        <h4>El caso especial de Calle Santa Rita:</h4>
+        <ul>
+          <li>
+            <strong
+              >Calle Santa Rita (entre Güemes y el canal de desagüe):</strong
+            >
+            En su planilla se presupuestó únicamente movimiento de suelo y
+            adoquinado (no figuran los ítems de hormigón para cordón).
+          </li>
+        </ul>
+      </div>
+
+      <h2>Resumen Ejecutivo y Aspectos Legales</h2>
+      <p>
+        El proyecto representa una inversión de infraestructura urbana de gran
+        envergadura para la localidad, regulado de forma estricta bajo los
+        siguientes parámetros institucionales:
+      </p>
+
+      <ul>
+        <li>
+          <strong>Monto Total de Obra Aprobado:</strong>
+          <span class="costo-destacado">$540.977.338</span> cubriendo una
+          extensión total de
+          <strong style="color: #fff">3.293 metros lineales</strong> de
+          intervención vial.
+        </li>
+        <li>
+          <strong>Régimen de Pago Obligatorio:</strong> La obra se financia
+          mediante el sistema de <em>Contribución por Mejoras</em>, siendo de
+          carácter obligatorio para todos los propietarios frentistas (terrenos
+          edificados o baldíos) beneficiados en los barrios Las Flores y Villa
+          Luján.
+        </li>
+        <li>
+          <strong>Planes de Pago y Beneficios Financieros:</strong>
+          <ul class="sub-list">
+            <li>
+              <strong>Opción 1 (Contado):</strong> Un único pago en efectivo con
+              un <span class="costo-destacado">20% de descuento</span> sobre el
+              valor total de la contribución.
+            </li>
+            <li>
+              <strong>Opción 2 (Financiado):</strong> Anticipo inicial del 20% y
+              el 80% restante financiado en hasta
+              <strong style="color: #fff">24 cuotas mensuales</strong> con un
+              interés del 3% mensual mediante el Sistema Francés.
+            </li>
+            <li>
+              <em>Asignación de oficio:</em> Si el frentista no manifiesta su
+              opción de pago dentro del plazo de 10 días hábiles de la
+              notificación, el municipio aplicará de forma automática el plan
+              financiado máximo de 24 cuotas.
+            </li>
+          </ul>
+        </li>
+        <li>
+          <strong>Fondo Compensador (10%):</strong> Se añade de manera
+          transversal un recargo del 10% sobre el total de cada frente. Este
+          fondo se destinará a cubrir imprevistos de la obra, falta de pago o
+          situaciones de morosidad.
+        </li>
+        <li>
+          <strong>Planes Especiales de Asistencia:</strong> Los vecinos de bajos
+          recursos, con ingresos mínimos comprobables, frentes con dimensiones
+          excepcionales o instituciones deportivas, podrán tramitar esquemas
+          especiales de financiamiento ante la Secretaría de Hacienda.
+        </li>
+        <li>
+          <strong>Registro de Oposiciones y Validation Legal:</strong> Conforme
+          a la legislación local (Ordenanza Nº 732/2001), se establece la
+          apertura de un Registro de Oposiciones por un término de
+          <strong style="color: #fff">10 días hábiles</strong> desde la
+          notificación formal.
+          <ul class="sub-list">
+            <li>
+              <strong>Firma Física:</strong> Se reciben oposiciones presenciales
+              en la Mesa de Entradas de la Municipalidad (Av. Mitre 1913) o en
+              la oficina de Obras Privadas (Calle Fleming 1332).
+            </li>
+            <li>
+              <strong>Frentistas No Residentes:</strong> Se habilitará un canal
+              vía correo electrónico para aquellos titulares que no residan de
+              forma permanente en la localidad.
+            </li>
+            <li>
+              <em>Ratificación:</em> Si las oposiciones asentadas no alcanzan el
+              porcentaje mínimo que exige la normativa vigente, la obra queda
+              automáticamente ratificada y se procederá a la emisión de las
+              liquidaciones de cobro correspondientes.
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="visitas-container">
+        <div class="visitas-card">
+          <div class="visitas-title">Vecinos Informados Activos</div>
+          <div class="visitas-number">
+            <script
+              type="text/javascript"
+              src="https://contador.websiteout.com/js/13/3/31/0"
+            ></script>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>
+          Ordenanza Nº 1383/2025 — Sancionada por el Concejo Deliberante de Mina
+          Clavero el 16 de abril de 2025.
+        </p>
+        <p style="margin-top: 5px; opacity: 0.8">
+          Lic. Hernán Esteban (Presidente) — M. Agustina Cáceres Cuellar
+          (Vicepresidente 1º)
+        </p>
+      </footer>
     </div>
 
     <script>
-        function calcularCuotaFrances(saldo, meses, tasaMensual) {
-            if (saldo <= 0) return 0;
-            return saldo * (tasaMensual / (1 - Math.pow(1 + tasaMensual, -meses)));
+      function calcularCuotaFrances(saldo, meses, tasaMensual) {
+        if (saldo <= 0) return 0;
+        return saldo * (tasaMensual / (1 - Math.pow(1 + tasaMensual, -meses)));
+      }
+
+      function formatearMoneda(valor) {
+        return new Intl.NumberFormat("es-AR", {
+          style: "currency",
+          currency: "ARS",
+          minimumFractionDigits: 2,
+        }).format(valor);
+      }
+
+      let usuarioModificoAnticipo = false;
+
+      function calcularPresupuesto(esModificacionDeAnticipo) {
+        if (esModificacionDeAnticipo) {
+          usuarioModificoAnticipo = true;
         }
 
-        function formatearMoneda(valor) {
-            return new Intl.NumberFormat('es-AR', {
-                style: 'currency',
-                currency: 'ARS',
-                minimumFractionDigits: 2
-            }).format(valor);
+        const metros =
+          parseFloat(document.getElementById("metros-frente").value) || 0;
+        const costoPorMetro =
+          parseFloat(document.getElementById("seleccion-calle").value) || 0;
+        const tasaInteres = 0.03;
+
+        const costoTotal = metros * costoPorMetro;
+        const minimoObligatorio = costoTotal * 0.2;
+
+        const inputAnticipo = document.getElementById("importe-anticipo");
+        let anticipoIngresado = parseFloat(inputAnticipo.value);
+
+        if (isNaN(anticipoIngresado) || anticipoIngresado < 0) {
+          anticipoIngresado = 0;
         }
 
-        let usuarioModificoAnticipo = false;
-
-        function calcularPresupuesto(esModificacionDeAnticipo) {
-            if (esModificacionDeAnticipo) {
-                usuarioModificoAnticipo = true;
-            }
-
-            const metros = parseFloat(document.getElementById('metros-frente').value) || 0;
-            const costoPorMetro = parseFloat(document.getElementById('seleccion-calle').value) || 0;
-            const tasaInteres = 0.03;
-
-            const costoTotal = metros * costoPorMetro;
-            const minimoObligatorio = costoTotal * 0.20;
-
-            const inputAnticipo = document.getElementById('importe-anticipo');
-            let anticipoIngresado = parseFloat(inputAnticipo.value);
-            
-            if (isNaN(anticipoIngresado) || anticipoIngresado < 0) {
-                anticipoIngresado = 0;
-            }
-
-            if (!usuarioModificoAnticipo && !esModificacionDeAnticipo) {
-                anticipoIngresado = Math.round(minimoObligatorio);
-                inputAnticipo.value = anticipoIngresado;
-            }
-
-            let anticipoAplicado = anticipoIngresado;
-            const cartelError = document.getElementById('error-anticipo');
-
-            if (anticipoIngresado < minimoObligatorio && costoTotal > 0) {
-                anticipoAplicado = minimoObligatorio;
-                cartelError.innerHTML = `⚠️ El importe ingresado es menor al mínimo obligatorio. El simulador calculará el plan aplicando el 20% requerido por ordenanza (${formatearMoneda(minimoObligatorio)}).`;
-                cartelError.style.display = 'block';
-            } else {
-                cartelError.style.display = 'none';
-            }
-
-            const saldoAFinanciar = Math.max(0, costoTotal - anticipoAplicado);
-
-            const cuota3 = calcularCuotaFrances(saldoAFinanciar, 3, tasaInteres);
-            const cuota6 = calcularCuotaFrances(saldoAFinanciar, 6, tasaInteres);
-            const cuota24 = calcularCuotaFrances(saldoAFinanciar, 24, tasaInteres);
-
-            document.getElementById('res-total').innerText = formatearMoneda(costoTotal);
-            document.getElementById('res-min-obligatorio').innerText = formatearMoneda(minimoObligatorio);
-            document.getElementById('res-anticipo').innerText = formatearMoneda(anticipoAplicado);
-            document.getElementById('res-saldo').innerText = formatearMoneda(saldoAFinanciar);
-            
-            if (saldoAFinanciar > 0) {
-                document.getElementById('res-cuota3').innerText = formatearMoneda(cuota3) + " / mes";
-                document.getElementById('res-cuota6').innerText = formatearMoneda(cuota6) + " / mes";
-                document.getElementById('res-cuota24').innerText = formatearMoneda(cuota24) + " / mes";
-            } else {
-                document.getElementById('res-cuota3').innerText = "$0,00 (Saldo cancelado)";
-                document.getElementById('res-cuota6').innerText = "$0,00 (Saldo cancelado)";
-                document.getElementById('res-cuota24').innerText = "$0,00 (Saldo cancelado)";
-            }
+        if (!usuarioModificoAnticipo && !esModificacionDeAnticipo) {
+          anticipoIngresado = Math.round(minimoObligatorio);
+          inputAnticipo.value = anticipoIngresado;
         }
 
-        // FUNCIONES PARA CONTROLAR EL POPUP MODAL
-        function cerrarModal() {
-            document.getElementById('noticeModal').classList.remove('active');
+        let anticipoAplicado = anticipoIngresado;
+        const cartelError = document.getElementById("error-anticipo");
+
+        if (anticipoIngresado < minimoObligatorio && costoTotal > 0) {
+          anticipoAplicado = minimoObligatorio;
+          cartelError.innerHTML = `⚠️ El importe ingresado es menor al mínimo obligatorio. El simulador calculará el plan aplicando el 20% requerido por ordenanza (${formatearMoneda(minimoObligatorio)}).`;
+          cartelError.style.display = "block";
+        } else {
+          cartelError.style.display = "none";
         }
 
-        window.onload = function() {
-            calcularPresupuesto(false);
-            // Activar el popup de forma automática al cargar el sitio
-            setTimeout(() => {
-                document.getElementById('noticeModal').classList.add('active');
-            }, 300);
-        };
+        const saldoAFinanciar = Math.max(0, costoTotal - anticipoAplicado);
+
+        const cuota3 = calcularCuotaFrances(saldoAFinanciar, 3, tasaInteres);
+        const cuota6 = calcularCuotaFrances(saldoAFinanciar, 6, tasaInteres);
+        const cuota24 = calcularCuotaFrances(saldoAFinanciar, 24, tasaInteres);
+
+        document.getElementById("res-total").innerText =
+          formatearMoneda(costoTotal);
+        document.getElementById("res-min-obligatorio").innerText =
+          formatearMoneda(minimoObligatorio);
+        document.getElementById("res-anticipo").innerText =
+          formatearMoneda(anticipoAplicado);
+        document.getElementById("res-saldo").innerText =
+          formatearMoneda(saldoAFinanciar);
+
+        if (saldoAFinanciar > 0) {
+          document.getElementById("res-cuota3").innerText =
+            formatearMoneda(cuota3) + " / mes";
+          document.getElementById("res-cuota6").innerText =
+            formatearMoneda(cuota6) + " / mes";
+          document.getElementById("res-cuota24").innerText =
+            formatearMoneda(cuota24) + " / mes";
+        } else {
+          document.getElementById("res-cuota3").innerText =
+            "$0,00 (Saldo cancelado)";
+          document.getElementById("res-cuota6").innerText =
+            "$0,00 (Saldo cancelado)";
+          document.getElementById("res-cuota24").innerText =
+            "$0,00 (Saldo cancelado)";
+        }
+      }
+
+      // FUNCIONES PARA CONTROLAR EL POPUP MODAL
+      function cerrarModal() {
+        document.getElementById("noticeModal").classList.remove("active");
+      }
+
+      window.onload = function () {
+        calcularPresupuesto(false);
+        // Activar el popup de forma automática al cargar el sitio
+        setTimeout(() => {
+          document.getElementById("noticeModal").classList.add("active");
+        }, 300);
+      };
     </script>
-</body>
-
+  </body>
 </html>
